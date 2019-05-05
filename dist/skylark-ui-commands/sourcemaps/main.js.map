@@ -1,0 +1,1 @@
+{"version":3,"sources":["main.js"],"names":["define","commands"],"mappings":";;;;;;;AAAAA,QACC,aACA,YACA,aACC,SAASC,GACV,OAAOA","file":"../main.js","sourcesContent":["define([\r\n\t\"./commands\",\r\n\t\"./Command\",\r\n\t\"./Manager\"\r\n],function(commands){\r\n\treturn commands;\r\n});"]}

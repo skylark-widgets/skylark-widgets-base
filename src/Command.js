@@ -1,31 +1,16 @@
 define([
 	"skylark-langx/Evented",
-	"qscript/lang/Event"
-], function(Evented,Event){
-    var ActionCheckingEvent = Class.declare({
-        "-parent-": Event,
-        "-public-": {
-            "-attributes-": {
-                "context"  :   {
-                    // the attribute name which is changed
-                    "type"  :   Object
-                },
-                "result" : {
-                	"type" : Object,
-                	"writable" : true
-                }       
-            }
-        }
-    });
+	"./commands"
+], function(Evented,commands){
 
-	var Action = Evented.inherit({
-		"klassName" : "Action",
+	var Command = Evented.inherit({
+		"klassName" : "Command",
 
 		"category" : {
 			//desc : "Group or category where the action belongs.",
 			//type : String
 			get : function() {
-				return this._category;
+				return this._options.category;
 			}
 		},
 
@@ -33,15 +18,15 @@ define([
 			//desc : "Indicates whether client controls and menu items appear checked.",
 			//type : Boolean
 			get : function() {
-				return this._checked;
+				return this._options.checked;
 			}
 		},
 
-		"iconClass" : {
+		"icon" : {
 			//desc : "Represents the icon class of the action.",
 			//type : String
 			get : function() {
-				return this._iconClass;
+				return this._options.icon;
 			}
 		},
 
@@ -49,25 +34,40 @@ define([
 			//desc : "Represents the caption of the action.",
 			//type : String
 			get : function() {
-				return this._label;
+				return this._options.label;
 			}
 		},
 
-		"shortCut" : {
+		"name" : {
+			//desc : "Represents the caption of the action.",
+			//type : String
+			get : function() {
+				return this._name;
+			}
+		},
+
+		"shortcut" : {
 			//desc : "Shortcut that triggers the action.",
 			//type : String
 			get : function() {
-				return this._shortCut;
+				return this._options.shortCut;
 			}
 		},
+		
 		"tooltip" : {
 			//desc : "Stores the Help hint text.",
 			//type : String
 			get : function() {
-				return this._tooltip;
+				return this._options.tooltip;
 			}
 		},
 
+
+	    /**
+	     * Executes the command. Additional arguments are passed to the executing function
+	     *
+	     * @return {$.Promise} a  promise that will be resolved when the command completes.
+	     */
 		execute: function(){
 			this.trigger("executed");
 		},
@@ -89,13 +89,14 @@ define([
             	return true;
         	}
 		},
-		"init":	 function(params){
-			this._setupAttributeValues(params);
+		"init":	 function(name,options){
+			this._name = name;
+			this._options = options || {};
 		}
 	
 	});
 	
-	return Action;
+	return commands.Command = Command;
 });
 
 

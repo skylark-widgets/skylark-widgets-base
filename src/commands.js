@@ -1,5 +1,5 @@
 define([
 	"skylark-langx/skylark"
 ],function(skylark){
-	return skylark.actions = {};
+	return skylark.attach("ui.commands",{});
 });
