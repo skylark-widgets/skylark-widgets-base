@@ -1,2 +1,2 @@
-# skylark-ui-commands
-The skylark ui commands library, in development.
+# skylark-widgets-base
+The skylark widget base library, in development.

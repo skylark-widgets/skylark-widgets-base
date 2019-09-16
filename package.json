@@ -1,7 +1,7 @@
 {
-  "name": "skylark-ui-commands",
+  "name": "skylark-widgets-base",
   "version": "0.9.0",
-  "description": "A dom plugin for  editing  the content of html element.",
+  "description": "The skylark widget base library.",
   "main": "-",
   "scripts": {
     "build": "sbundle build .",
@@ -10,7 +10,7 @@
   "homepage": "www.skylarkjs.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skylarkui/skylark-ui-commands.git"
+    "url": "git+https://github.com/skylark-widgets/skylark-widgets-base.git"
   },
   "keywords": [
     "skylark",
@@ -22,9 +22,10 @@
   ],
   "author": "Hudaokeji Co.,Ltd",
   "license": "MIT",
-  "bugs": "https://github.com/skylarkui/skylark-ui-commands/issues",
+  "bugs": "https://github.com/skylark-widgets/skylark-widgets-base/issues",
   "devDependencies": {
-    "skylark-langx": "https://github.com/skylarklangx/skylark-langx#master"
+    "skylark-langx": "https://github.com/skylarklangx/skylark-langx#master",
+    "skylark-utils-dom": "git+https://github.com/skylarkutils/skylark-utils-dom.git#master"
   },
   "engines": {
     "node": ">=0.8.0"

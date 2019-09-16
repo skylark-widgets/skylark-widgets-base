@@ -1,6 +1,6 @@
 define([
 	"skylark-langx/Evented",
-	"./commands"
+	"./CommandManager"
 ], function(Evented,commands){
 
 	var Command = Evented.inherit({

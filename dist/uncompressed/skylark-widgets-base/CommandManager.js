@@ -1,8 +1,9 @@
 define([
-	"skylark-langx/Evented"
-], function(Evented){
+	"skylark-langx/Evented",
+	"./base"
+], function(Evented,base){
 
-	var Manager = Evented.inherit({
+	var CommandManager = Evented.inherit({
 		"klassName"		:	"Manager",
 
 
@@ -20,7 +21,7 @@ define([
 
 	});
 
-	return Manager;
+	return base.CommandManager = CommandManager;
 
 });
 
