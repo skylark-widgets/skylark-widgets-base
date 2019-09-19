@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./base","skylark-langx/Evented"],function(n){var t=Evented.inherit({_construct:function(n,t){this._widget=n,this._options=t}});return n.Addon=t});
+define(["./base","skylark-langx/Evented"],function(i,t){var n=t.inherit({_construct:function(i,t){this._widget=i,this._options=t,this._init&&this._init()}});return i.Addon=n});
 //# sourceMappingURL=sourcemaps/Addon.js.map
