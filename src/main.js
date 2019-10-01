@@ -1,7 +1,7 @@
 define([
 	"./base",
-	"./Command",
-	"./CommandManager",
+	"./Action",
+	"./ActionManager",
 	"./Widget"
 ],function(base){
 	return base;

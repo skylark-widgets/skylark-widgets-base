@@ -91,12 +91,12 @@ define('skylark-widgets-base/base',[
 ],function(skylark){
 	return skylark.attach("widgets.base",{});
 });
-define('skylark-widgets-base/CommandManager',[
+Acdefine([
 	"skylark-langx/Evented",
 	"./base"
 ], function(Evented,base){
 
-	var CommandManager = Evented.inherit({
+	var ActionManager = Evented.inherit({
 		"klassName"		:	"Manager",
 
 
@@ -114,18 +114,21 @@ define('skylark-widgets-base/CommandManager',[
 
 	});
 
-	return base.CommandManager = CommandManager;
+	return base.ActionManager = ActionManager;
 
 });
 
 
-define('skylark-widgets-base/Command',[
-	"skylark-langx/Evented",
-	"./CommandManager"
-], function(Evented,commands){
+define("skylark-widgets-base/ActionManager", function(){});
 
-	var Command = Evented.inherit({
-		"klassName" : "Command",
+define('skylark-widgets-base/Action',[
+	"skylark-langx/Evented",
+	"./base",
+	"./ActionManager"
+], function(Evented, base, ActiionManager){
+
+	var Action = Evented.inherit({
+		"klassName" : "Action",
 
 		"category" : {
 			//desc : "Group or category where the action belongs.",
@@ -151,11 +154,20 @@ define('skylark-widgets-base/Command',[
 			}
 		},
 
-		"label" : {
+		"text" : {
 			//desc : "Represents the caption of the action.",
 			//type : String
 			get : function() {
-				return this._options.label;
+				return this._options.text;
+			},
+			set : function(value) {
+				if (this._options.text !== value) {
+					this._options.text = value;
+					this.trigger("checkingDisabled");
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
 			}
 		},
 
@@ -183,6 +195,22 @@ define('skylark-widgets-base/Command',[
 			}
 		},
 
+		"disabled" : {
+			//type : Boolean
+			get : function() {
+				return this._options.disabled;
+			},
+
+			set : function(value) {
+				if (this._options.disabled !== value) {
+					this._options.disabled = value;
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
+			}
+		},
+
 
 	    /**
 	     * Executes the command. Additional arguments are passed to the executing function
@@ -190,10 +218,13 @@ define('skylark-widgets-base/Command',[
 	     * @return {$.Promise} a  promise that will be resolved when the command completes.
 	     */
 		execute: function(){
+			if (this._execute) {
+				this._execute();
+			}
 			this.trigger("executed");
 		},
 
-        isEnabled: function(context) {
+        disabled: function(context) {
         	var e = this.trigger("checkingDisabled");
         	if (e && e.result) {
         		return false;
@@ -210,6 +241,11 @@ define('skylark-widgets-base/Command',[
             	return true;
         	}
 		},
+
+		option : function(key) {
+			return this._options[key];
+		},
+
 		"init":	 function(name,options){
 			this._name = name;
 			this._options = options || {};
@@ -217,7 +253,7 @@ define('skylark-widgets-base/Command',[
 	
 	});
 	
-	return commands.Command = Command;
+	return base.Action = Action;
 });
 
 
@@ -233,8 +269,9 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-plugins",
+  "skylark-data-collection/Map",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,Map,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -652,8 +689,8 @@ define('skylark-widgets-base/Widget',[
 
 define('skylark-widgets-base/main',[
 	"./base",
-	"./Command",
-	"./CommandManager",
+	"./Action",
+	"./ActionManager",
 	"./Widget"
 ],function(base){
 	return base;

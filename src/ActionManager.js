@@ -1,9 +1,9 @@
-define([
+Acdefine([
 	"skylark-langx/Evented",
 	"./base"
 ], function(Evented,base){
 
-	var CommandManager = Evented.inherit({
+	var ActionManager = Evented.inherit({
 		"klassName"		:	"Manager",
 
 
@@ -21,7 +21,7 @@ define([
 
 	});
 
-	return base.CommandManager = CommandManager;
+	return base.ActionManager = ActionManager;
 
 });
 

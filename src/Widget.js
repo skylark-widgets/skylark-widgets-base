@@ -9,8 +9,9 @@ define([
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-plugins",
+  "skylark-data-collection/Map",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,Map,base){
 
 /*---------------------------------------------------------------------------------*/
 

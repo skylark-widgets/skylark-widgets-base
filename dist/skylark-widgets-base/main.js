@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./base","./Command","./CommandManager","./Widget"],function(n){return n});
+define(["./base","./Action","./ActionManager","./Widget"],function(n){return n});
 //# sourceMappingURL=sourcemaps/main.js.map

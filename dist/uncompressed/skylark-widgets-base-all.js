@@ -1794,12 +1794,12 @@ define('skylark-langx/Evented',[
 ],function(Evented){
     return Evented;
 });
-define('skylark-widgets-base/CommandManager',[
+Acdefine([
 	"skylark-langx/Evented",
 	"./base"
 ], function(Evented,base){
 
-	var CommandManager = Evented.inherit({
+	var ActionManager = Evented.inherit({
 		"klassName"		:	"Manager",
 
 
@@ -1817,18 +1817,21 @@ define('skylark-widgets-base/CommandManager',[
 
 	});
 
-	return base.CommandManager = CommandManager;
+	return base.ActionManager = ActionManager;
 
 });
 
 
-define('skylark-widgets-base/Command',[
-	"skylark-langx/Evented",
-	"./CommandManager"
-], function(Evented,commands){
+define("skylark-widgets-base/ActionManager", function(){});
 
-	var Command = Evented.inherit({
-		"klassName" : "Command",
+define('skylark-widgets-base/Action',[
+	"skylark-langx/Evented",
+	"./base",
+	"./ActionManager"
+], function(Evented, base, ActiionManager){
+
+	var Action = Evented.inherit({
+		"klassName" : "Action",
 
 		"category" : {
 			//desc : "Group or category where the action belongs.",
@@ -1854,11 +1857,20 @@ define('skylark-widgets-base/Command',[
 			}
 		},
 
-		"label" : {
+		"text" : {
 			//desc : "Represents the caption of the action.",
 			//type : String
 			get : function() {
-				return this._options.label;
+				return this._options.text;
+			},
+			set : function(value) {
+				if (this._options.text !== value) {
+					this._options.text = value;
+					this.trigger("checkingDisabled");
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
 			}
 		},
 
@@ -1886,6 +1898,22 @@ define('skylark-widgets-base/Command',[
 			}
 		},
 
+		"disabled" : {
+			//type : Boolean
+			get : function() {
+				return this._options.disabled;
+			},
+
+			set : function(value) {
+				if (this._options.disabled !== value) {
+					this._options.disabled = value;
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
+			}
+		},
+
 
 	    /**
 	     * Executes the command. Additional arguments are passed to the executing function
@@ -1893,10 +1921,13 @@ define('skylark-widgets-base/Command',[
 	     * @return {$.Promise} a  promise that will be resolved when the command completes.
 	     */
 		execute: function(){
+			if (this._execute) {
+				this._execute();
+			}
 			this.trigger("executed");
 		},
 
-        isEnabled: function(context) {
+        disabled: function(context) {
         	var e = this.trigger("checkingDisabled");
         	if (e && e.result) {
         		return false;
@@ -1913,6 +1944,11 @@ define('skylark-widgets-base/Command',[
             	return true;
         	}
 		},
+
+		option : function(key) {
+			return this._options[key];
+		},
+
 		"init":	 function(name,options){
 			this._name = name;
 			this._options = options || {};
@@ -1920,7 +1956,7 @@ define('skylark-widgets-base/Command',[
 	
 	});
 	
-	return commands.Command = Command;
+	return base.Action = Action;
 });
 
 
@@ -11043,6 +11079,322 @@ define('skylark-domx-plugins/main',[
 });
 define('skylark-domx-plugins', ['skylark-domx-plugins/main'], function (main) { return main; });
 
+define('skylark-data-collection/collections',[
+	"skylark-langx/skylark"
+],function(skylark){
+	return skylark.attach("data.collections",{});
+});
+define('skylark-data-collection/Collection',[
+    "skylark-langx/Evented",
+    "./collections"
+], function(Evented, collections) {
+
+    var Collection = collections.Collection = Evented.inherit({
+
+        "klassName": "Collection",
+
+        _clear: function() {
+            throw new Error('Unimplemented API');
+        },
+
+        "clear": function() {
+            //desc: "Removes all items from the Collection",
+            //result: {
+            //    type: Collection,
+            //    desc: "this instance for chain call"
+            //},
+            //params: [],
+            this._clear();
+            this.trigger("changed:clear");
+            return this;
+        },
+
+        /*
+         *@method count
+         *@return {Number}
+         */
+        count : /*Number*/function () {
+            var c = 0,
+                it = this.iterator();
+            while(!it.hasNext()){
+                c++;
+            }
+            return c;
+        },
+
+        "forEach": function( /*Function*/ func, /*Object?*/ thisArg) {
+            //desc: "Executes a provided callback function once per collection item.",
+            //result: {
+            //    type: Number,
+            //    desc: "the number of items"
+            //},
+            //params: [{
+            //    name: "func",
+            //    type: Function,
+            //    desc: "Function to execute for each element."
+            //}, {
+            //    name: "thisArg",
+            //    type: Object,
+            //    desc: "Value to use as this when executing callback."
+            //}],
+            var it = this.iterator();
+            while(it.hasNext()){
+                var item = it.next();
+                func.call(thisArg || item,item);
+            }
+            return this;
+
+        },
+
+        "iterator" : function() {
+            throw new Error('Unimplemented API');
+        },
+
+        "toArray": function() {
+            //desc: "Returns an array containing all of the items in this collection in proper sequence (from first to last item).",
+            //result: {
+            //    type: Array,
+            //    desc: "an array containing all of the elements in this collection in proper sequence"
+            //},
+            //params: [],
+            var items = [],
+                it = this.iterator();
+            while(!it.hasNext()){
+                items.push(it.next());
+            }
+            return items;
+        }
+    });
+
+    return Collection;
+});
+
+
+define('skylark-data-collection/Map',[
+    "./collections",
+    "./Collection"
+], function( collections, Collection) {
+
+    var Map = collections.Map = Collection.inherit({
+
+        "klassName": "Map",
+
+        _getInnerItems : function() {
+            return this._items;
+        },
+
+        _clear : function() {
+            this._items = [];
+        },
+
+        _findKeyByRegExp: function(regExp, callback) {
+            var items = this._getInnerItems();
+            return items.filter(function(key) {
+                if (key.match(regExp)) {
+                    if (callback) callback(key);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        },
+
+        "get":  function(strKey, silent) {
+            //desc: "Returns the item at the specified key in the Hashtable.",
+            //result: {
+            //    type: Object,
+            //    desc: "The item at the specified key."
+            //},
+            //params: [{
+            //    name: "strKey",
+            //    type: String,
+            //    desc: "The key of the item to return."
+            //}, {
+            //    name: "silent",
+            //    type: Boolean,
+            //    desc: "the silent flag.",
+            //    optional: true
+            //}],
+            if (typeof(strKey) != "string") {
+                throw "hash key is not string!";
+            }
+            /*
+            if (!silent && !this.contains(strKey)) {
+                throw "hash key is not  existed";
+            }
+            */
+            var items = this._getInnerItems();
+            return items[strKey];
+        },
+
+        "iterator" : function() {
+            var i =0;
+            return {
+                hasNext : function() {
+                    return i < this._items.length;
+                },
+                next : function() {
+                    var key =  this._items[i++];
+                    return [this._items[key],key];
+                }
+            }
+        },
+
+        "set": function( /*String*/ strKey, /*Object*/ value) {
+            //desc: "Replaces the item at the specified key in the Hashtable with the specified item.",
+            //result: {
+            //    type: Map,
+            //    desc: "this instance for chain call."
+            //},
+            //params: [{
+            //    name: "strKey",
+            //    type: String,
+            //    desc: "key of the item to replace."
+            //}, {
+            //    name: "value",
+            //    type: Object,
+            //    desc: "item to be stored at the specified position."
+            //}],
+            if (typeof(strKey) != "string") {
+                throw "hash key is not string!";
+            }
+
+            /*
+            if (!this.contains(strKey)) {
+                throw "hash key is not existed";
+            }
+            */
+
+            var items = this._getInnerItems();
+            if (items.indexOf(strKey) == -1) {
+                items.push(strKey);
+            }
+            var oldValue = items[strKey];
+            if (oldValue !== value) {
+                items[strKey] = value;
+                var updated = {};
+                updated[strKey] = {
+                    name : strKey,
+                    value : value,
+                    oldValue : oldValue
+                };
+                this.trigger("changed" ,{ //TODO: "changed:"+ strKey
+                    data : updated
+                });
+            }
+            return this;
+        },
+
+
+        "remove": function( /*String*/ strKey) {
+            //desc: "Removes the first occurrence of a specific item from the Hashtable",
+            //result: {
+            //    type: Map,
+            //    desc: "this instance for chain call."
+            //},
+            //params: [{
+            //    name: "strKey",
+            //    type: String,
+            //    desc: "The key for The item to remove from the Hashtable."
+            //}],
+            if (typeof(strKey) != "string") {
+                throw "hash key is not string!";
+            }
+            var items = this._getInnerItems();
+            var idx = items.indexOf(strKey);
+            if (idx >= 0) {
+                delete items[strKey];
+                delete items[idx];
+            }
+        },
+
+        findByRegExp: function( /*String*/ regExp, callback) {
+            //desc: "find regExp items",
+            //result: {
+            //    type: Map,
+            //    desc: "this instance for chain call."
+            //},
+            //params: [{
+            //    name: "regExp",
+            //    type: String,
+            //    desc: "The key for The item to remove from the Hashtable."
+            //}, {
+            //    name: "callback",
+            //    type: Function,
+            //    desc: "the callback method"
+            //}],
+            var items = [],
+                self = this;
+            this._findKeyByRegExp(regExp, function(key) {
+                var item = self.get(key);
+                if (callback) callback(item);
+                items.push(item);
+            });
+            return items;
+        },
+
+        removeByRegExp: function( /*String*/ regExp) {
+            //desc: "Removes regExp items",
+            //result: {
+            //    type: Map,
+            //    desc: "this instance for chain call."
+            //},
+            //params: [{
+            //    name: "regExp",
+            //    type: String,
+            //    desc: "The key for The item to remove from the Hashtable."
+            //}],
+            var self = this;
+            this._findKeyByRegExp(regExp, function(key) {
+                self.remove(key);
+            });
+        },
+
+        "toPlain": function() {
+            //desc: "Returns a plain object containing all of the items in this Hashable.",
+            //result: {
+            //    type: Object,
+            //    desc: "a plain object containing all of the items in this Hashtable."
+            //},
+            //params: [],
+            var items = this._getInnerItems(); 
+
+            for (var i = 0; i < items.length; i++) {
+                var key = items[i];
+                plain[key] = items[key];
+            }
+            return plain;
+        },
+
+        "toString": function( /*String?*/ delim) {
+            //desc: "implementation of toString, follows [].toString().",
+            //result: {
+            //    type: String,
+            //   desc: "The string."
+            //},
+            //params: [{
+            //    name: "delim",
+            //    type: String,
+            //    desc: "The delim ",
+            //    optional: true
+            //}],
+            var items = this._getInnerItems();
+
+            return items.join((delim || ","));
+        },
+
+        "init": function( /*Object*/ data) {
+            var items = this._items = [];
+            for (var name in data) {
+                items.push(name);
+                items[name]= data[name];
+            }
+        }
+       
+    });
+    return Map;
+});
+
 define('skylark-widgets-base/Widget',[
   "skylark-langx/skylark",
   "skylark-langx/langx",
@@ -11054,8 +11406,9 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-plugins",
+  "skylark-data-collection/Map",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,Map,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -11473,8 +11826,8 @@ define('skylark-widgets-base/Widget',[
 
 define('skylark-widgets-base/main',[
 	"./base",
-	"./Command",
-	"./CommandManager",
+	"./Action",
+	"./ActionManager",
 	"./Widget"
 ],function(base){
 	return base;

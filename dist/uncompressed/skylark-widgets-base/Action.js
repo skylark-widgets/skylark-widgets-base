@@ -1,10 +1,11 @@
 define([
 	"skylark-langx/Evented",
-	"./CommandManager"
-], function(Evented,commands){
+	"./base",
+	"./ActionManager"
+], function(Evented, base, ActiionManager){
 
-	var Command = Evented.inherit({
-		"klassName" : "Command",
+	var Action = Evented.inherit({
+		"klassName" : "Action",
 
 		"category" : {
 			//desc : "Group or category where the action belongs.",
@@ -30,11 +31,20 @@ define([
 			}
 		},
 
-		"label" : {
+		"text" : {
 			//desc : "Represents the caption of the action.",
 			//type : String
 			get : function() {
-				return this._options.label;
+				return this._options.text;
+			},
+			set : function(value) {
+				if (this._options.text !== value) {
+					this._options.text = value;
+					this.trigger("checkingDisabled");
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
 			}
 		},
 
@@ -62,6 +72,22 @@ define([
 			}
 		},
 
+		"disabled" : {
+			//type : Boolean
+			get : function() {
+				return this._options.disabled;
+			},
+
+			set : function(value) {
+				if (this._options.disabled !== value) {
+					this._options.disabled = value;
+					if (this._setDisabled) {
+						this._setDisabled();
+					}
+				}				
+			}
+		},
+
 
 	    /**
 	     * Executes the command. Additional arguments are passed to the executing function
@@ -69,10 +95,13 @@ define([
 	     * @return {$.Promise} a  promise that will be resolved when the command completes.
 	     */
 		execute: function(){
+			if (this._execute) {
+				this._execute();
+			}
 			this.trigger("executed");
 		},
 
-        isEnabled: function(context) {
+        disabled: function(context) {
         	var e = this.trigger("checkingDisabled");
         	if (e && e.result) {
         		return false;
@@ -89,6 +118,11 @@ define([
             	return true;
         	}
 		},
+
+		option : function(key) {
+			return this._options[key];
+		},
+
 		"init":	 function(name,options){
 			this._name = name;
 			this._options = options || {};
@@ -96,7 +130,7 @@ define([
 	
 	});
 	
-	return commands.Command = Command;
+	return base.Action = Action;
 });
 
 
