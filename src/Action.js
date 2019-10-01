@@ -1,8 +1,9 @@
 define([
 	"skylark-langx/Evented",
+	"skylark-data-collection/HashMap",
 	"./base",
 	"./ActionManager"
-], function(Evented, base, ActiionManager){
+], function(Evented, HashMap, base, ActiionManager){
 
 	var Action = Evented.inherit({
 		"klassName" : "Action",
@@ -12,6 +13,15 @@ define([
 			//type : String
 			get : function() {
 				return this._options.category;
+			}
+		},
+
+		"state"  : {
+			get : function() {
+				return  this._state || (this._state = new HashMap({
+					checked : false,
+					disabled : false
+				}));
 			}
 		},
 

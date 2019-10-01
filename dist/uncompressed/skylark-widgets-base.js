@@ -123,9 +123,10 @@ define("skylark-widgets-base/ActionManager", function(){});
 
 define('skylark-widgets-base/Action',[
 	"skylark-langx/Evented",
+	"skylark-data-collection/HashMap",
 	"./base",
 	"./ActionManager"
-], function(Evented, base, ActiionManager){
+], function(Evented, HashMap, base, ActiionManager){
 
 	var Action = Evented.inherit({
 		"klassName" : "Action",
@@ -135,6 +136,15 @@ define('skylark-widgets-base/Action',[
 			//type : String
 			get : function() {
 				return this._options.category;
+			}
+		},
+
+		"state"  : {
+			get : function() {
+				return  this._state || (this._state = new HashMap({
+					checked : false,
+					disabled : false
+				}));
 			}
 		},
 
@@ -269,9 +279,9 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-plugins",
-  "skylark-data-collection/Map",
+  "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,Map,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -297,7 +307,7 @@ define('skylark-widgets-base/Widget',[
         }
         
         Object.defineProperty(this,"state",{
-          value :this.options.state || new Map()
+          value :this.options.state || new HashMap()
         });
 
         //this.state = this.options.state || new Map();

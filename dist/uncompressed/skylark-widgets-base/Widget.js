@@ -9,9 +9,9 @@ define([
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-plugins",
-  "skylark-data-collection/Map",
+  "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,Map,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -37,7 +37,7 @@ define([
         }
         
         Object.defineProperty(this,"state",{
-          value :this.options.state || new Map()
+          value :this.options.state || new HashMap()
         });
 
         //this.state = this.options.state || new Map();
