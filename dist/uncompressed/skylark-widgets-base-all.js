@@ -1008,6 +1008,11 @@ define('skylark-langx-objects/main',[
 });
 define('skylark-langx-objects', ['skylark-langx-objects/main'], function (main) { return main; });
 
+define('skylark-langx/objects',[
+    "skylark-langx-objects"
+],function(objects){
+    return objects;
+});
 define('skylark-langx-arrays/arrays',[
   "skylark-langx-ns/ns",
   "skylark-langx-types",
@@ -2121,7 +2126,7 @@ define('skylark-data-collection/HashMap',[
 
 	return HashMap;
 });
-Acdefine([
+define('skylark-widgets-base/ActionManager',[
 	"skylark-langx/Evented",
 	"./base"
 ], function(Evented,base){
@@ -2149,25 +2154,28 @@ Acdefine([
 });
 
 
-define("skylark-widgets-base/ActionManager", function(){});
-
 define('skylark-widgets-base/Action',[
+	"skylark-langx/objects",
 	"skylark-langx/Evented",
 	"skylark-data-collection/HashMap",
 	"./base",
 	"./ActionManager"
-], function(Evented, HashMap, base, ActiionManager){
+], function(objects,Evented, HashMap, base, ActiionManager){
 
 	var Action = Evented.inherit({
 		"klassName" : "Action",
 
-		"category" : {
-			//desc : "Group or category where the action belongs.",
-			//type : String
-			get : function() {
-				return this._options.category;
-			}
-		},
+		"name"  : "",
+
+		"category" : "",
+
+		"text" : "",
+
+		"tooltip" : "",
+
+		"icon" : "",
+
+		"shortcut" : "",
 
 		"state"  : {
 			get : function() {
@@ -2178,119 +2186,30 @@ define('skylark-widgets-base/Action',[
 			}
 		},
 
-		"checked" : {
-			//desc : "Indicates whether client controls and menu items appear checked.",
-			//type : Boolean
-			get : function() {
-				return this._options.checked;
+		_construct : function(options) {
+			if (options) {
+				objects.mixin(this,options);
 			}
 		},
 
-		"icon" : {
-			//desc : "Represents the icon class of the action.",
-			//type : String
-			get : function() {
-				return this._options.icon;
-			}
-		},
+		_init : function() {
 
-		"text" : {
-			//desc : "Represents the caption of the action.",
-			//type : String
-			get : function() {
-				return this._options.text;
-			},
-			set : function(value) {
-				if (this._options.text !== value) {
-					this._options.text = value;
-					this.trigger("checkingDisabled");
-					if (this._setDisabled) {
-						this._setDisabled();
-					}
-				}				
-			}
 		},
-
-		"name" : {
-			//desc : "Represents the caption of the action.",
-			//type : String
-			get : function() {
-				return this._name;
-			}
-		},
-
-		"shortcut" : {
-			//desc : "Shortcut that triggers the action.",
-			//type : String
-			get : function() {
-				return this._options.shortCut;
-			}
-		},
-		
-		"tooltip" : {
-			//desc : "Stores the Help hint text.",
-			//type : String
-			get : function() {
-				return this._options.tooltip;
-			}
-		},
-
-		"disabled" : {
-			//type : Boolean
-			get : function() {
-				return this._options.disabled;
-			},
-
-			set : function(value) {
-				if (this._options.disabled !== value) {
-					this._options.disabled = value;
-					if (this._setDisabled) {
-						this._setDisabled();
-					}
-				}				
-			}
-		},
-
 
 	    /**
 	     * Executes the command. Additional arguments are passed to the executing function
 	     *
 	     * @return {$.Promise} a  promise that will be resolved when the command completes.
 	     */
-		execute: function(){
+		execute: function(params){
 			if (this._execute) {
-				this._execute();
+				this._execute(params);
 			}
-			this.trigger("executed");
-		},
-
-        disabled: function(context) {
-        	var e = this.trigger("checkingDisabled");
-        	if (e && e.result) {
-        		return false;
-        	} else {
-            	return true;
-        	}
-        },
-
-        shouldShow: function(context) {
-        	var e = this.trigger("checkingHidden");
-        	if (e && e.result) {
-        		return false;
-        	} else {
-            	return true;
-        	}
-		},
-
-		option : function(key) {
-			return this._options[key];
-		},
-
-		"init":	 function(name,options){
-			this._name = name;
-			this._options = options || {};
+			this.trigger("executed",{
+				params :params
+			});
 		}
-	
+
 	});
 	
 	return base.Action = Action;
@@ -3433,11 +3352,6 @@ define('skylark-langx/numbers',[
 	"skylark-langx-numbers"
 ],function(numbers){
 	return numbers;
-});
-define('skylark-langx/objects',[
-    "skylark-langx-objects"
-],function(objects){
-    return objects;
 });
 define('skylark-langx-strings/strings',[
     "skylark-langx-ns"

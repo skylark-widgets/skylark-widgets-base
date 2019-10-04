@@ -1,4 +1,4 @@
-Acdefine([
+define([
 	"skylark-langx/Evented",
 	"./base"
 ], function(Evented,base){
