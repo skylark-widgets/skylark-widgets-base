@@ -23,7 +23,7 @@
   "author": "Hudaokeji Co.,Ltd",
   "license": "MIT",
   "bugs": "https://github.com/skylark-widgets/skylark-widgets-base/issues",
-  "devDependencies": {
+  "dependencies": {
     "skylark-data-collection": "git+https://github.com/skylark-data/skylark-data-collection.git#master",
     "skylark-langx": "git+https://github.com/skylarklangx/skylark-langx.git#master",
     "skylark-utils-dom": "git+https://github.com/skylarkutils/skylark-utils-dom.git#master"
