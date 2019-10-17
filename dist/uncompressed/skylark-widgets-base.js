@@ -236,9 +236,10 @@ define('skylark-widgets-base/Widget',[
                 var addonOption = addonCategoryOptions[categoryName][i];
                 if (langx.isString(addonOption)) {
                   var addonName = addonOption,
-                      addonCtor = addons[categoryName][addonName];
+                      addonSetting = addons[categoryName][addonName],
+                      addonCtor = addonSetting.ctor ? addonSetting.ctor : addonSetting;
 
-                  this.addon(addonCtor);
+                  this.addon(addonCtor,addonSetting.options);
 
                 }
 
