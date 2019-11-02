@@ -192,14 +192,15 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-geom",
   "skylark-domx-velm",
   "skylark-domx-query",
+  "skylark-domx-fx",
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,plugins,HashMap,base){
+],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,fx,plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
-	var Widget = plugins.Plugin.inherit({
+  var Widget = plugins.Plugin.inherit({
     klassName: "Widget",
 
     _elmx : elmx,
@@ -526,7 +527,7 @@ define('skylark-widgets-base/Widget',[
     },
 
     throb: function(params) {
-      return noder.throb(this._elm,params);
+      return fx.throb(this._elm,params);
     },
 
 
@@ -610,7 +611,7 @@ define('skylark-widgets-base/Widget',[
     return ctor;
   };
 
-	return base.Widget = Widget;
+  return base.Widget = Widget;
 });
 
 define('skylark-widgets-base/main',[
