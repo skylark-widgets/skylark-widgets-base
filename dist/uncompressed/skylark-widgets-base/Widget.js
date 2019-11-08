@@ -5,6 +5,7 @@ define([
   "skylark-domx-data",
   "skylark-domx-eventer",
   "skylark-domx-noder",
+  "skylark-domx-files",
   "skylark-domx-geom",
   "skylark-domx-velm",
   "skylark-domx-query",
@@ -12,7 +13,7 @@ define([
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,geom,elmx,$,fx,plugins,HashMap,base){
+],function(skylark,langx,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
