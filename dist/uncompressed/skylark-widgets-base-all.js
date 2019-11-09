@@ -9881,10 +9881,11 @@ define('skylark-domx-geom/geom',[
     return skylark.attach("domx.geom", geom);
 });
 define('skylark-domx-geom/main',[
+    "skylark-langx/langx",
     "./geom",
     "skylark-domx-velm",
     "skylark-domx-query"        
-],function(geom,velm,$){
+],function(langx,geom,velm,$){
    // from ./geom
     velm.delegate([
         "borderExtents",
@@ -10988,6 +10989,13 @@ define('skylark-domx-plugins/plugins',[
             this.options[ key ] = value;
 
             return this;
+        },
+
+        getUID : function (prefix) {
+            prefix = prefix || "plugin";
+            do prefix += ~~(Math.random() * 1000000)
+            while (document.getElementById(prefix))
+            return prefix;
         },
 
         elm : function() {
