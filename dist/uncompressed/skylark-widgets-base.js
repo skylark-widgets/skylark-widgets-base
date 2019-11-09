@@ -531,6 +531,10 @@ define('skylark-widgets-base/Widget',[
       return fx.throb(this._elm,params);
     },
 
+    emit : function(type,params) {
+      var e = langx.Emitter.createEvent(type,params);
+      return langx.Emitter.prototype.emit.call(this,e);
+    },
 
     /**
      *  Attach the current widget element to dom document.
