@@ -79,7 +79,8 @@ define([
     _parse : function(elm,options) {
       var optionsAttr = datax.data(elm,"options");
       if (optionsAttr) {
-         var options1 = JSON.parse("{" + optionsAttr + "}");
+         //var options1 = JSON.parse("{" + optionsAttr + "}");
+         var options1 = eval("({" + optionsAttr + "})");
          options = langx.mixin(options1,options); 
       }
       return options || {};
