@@ -63,10 +63,12 @@ define([
 
               }
           }
-
-
         }
 
+        if (this._elm.parentElement) {
+          // The widget is already in document
+          this._startup();
+        }
 
      },
 
