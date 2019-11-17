@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./base","skylark-langx/Evented"],function(i,t){var n=t.inherit({_construct:function(i,t){this._widget=i,this._options=t,this._init&&this._init()}});return i.Addon=n});
+define(["skylark-langx/langx","skylark-langx/Evented","./base"],function(i,n,t){var e=n.inherit({_construct:function(n,t){this._widget=n,Object.defineProperty(this,"options",{value:i.mixin({},this.options,t,!0)}),this._init&&this._init()}});return t.Addon=e});
 //# sourceMappingURL=sourcemaps/Addon.js.map
