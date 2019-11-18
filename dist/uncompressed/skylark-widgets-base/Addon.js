@@ -18,6 +18,17 @@ define([
 
 	});
 
+	Addon.register = function(Widget) {
+		var categoryName = this.categoryName,
+			addonName = this.addonName;
+
+		if (categoryName && addonName) {
+			Widget.addons = Widget.addons || {};
+			Widget.addons[categoryName] = Widget.addons[categoryName] || {};
+			Widget.addons[categoryName][addonName] = this;
+		}
+	};
+
 	return base.Addon = Addon;
 
 });
