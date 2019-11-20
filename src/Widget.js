@@ -351,8 +351,10 @@ define([
     },
 
     emit : function(type,params) {
-      var e = langx.Emitter.createEvent(type,params);
-      return langx.Emitter.prototype.emit.call(this,e);
+      var e = langx.Emitter.createEvent(type,{
+        data : params
+      });
+      return langx.Emitter.prototype.emit.call(this,e,params);
     },
 
     /**
