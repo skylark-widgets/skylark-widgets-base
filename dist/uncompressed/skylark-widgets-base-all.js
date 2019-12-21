@@ -5202,6 +5202,9 @@ define('skylark-domx-finder/finder',[
 
         'visible': function(elm) {
             return elm.offsetWidth && elm.offsetWidth
+        },
+        'empty': function(elm) {
+            return !elm.hasChildNodes();
         }
     };
 
