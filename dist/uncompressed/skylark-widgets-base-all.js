@@ -2589,6 +2589,29 @@ define('skylark-widgets-base/Action',[
 
 
 
+define('skylark-langx-events/createEvent',[
+	"./events",
+	"./Event"
+],function(events,Event){
+    function createEvent(type,props) {
+        //var e = new CustomEvent(type,props);
+        //return safeMixin(e, props);
+        return new Event(type,props);
+    };
+
+    return events.createEvent = createEvent;	
+});
+define('skylark-langx-events/main',[
+	"./events",
+	"./Event",
+	"./Listener",
+	"./Emitter",
+	"./createEvent"
+],function(events){
+	return events;
+});
+define('skylark-langx-events', ['skylark-langx-events/main'], function (main) { return main; });
+
 define('skylark-langx/arrays',[
 	"skylark-langx-arrays"
 ],function(arrays){
@@ -3519,29 +3542,6 @@ define('skylark-langx/Deferred',[
 ],function(Deferred){
     return Deferred;
 });
-define('skylark-langx-events/createEvent',[
-	"./events",
-	"./Event"
-],function(events,Event){
-    function createEvent(type,props) {
-        //var e = new CustomEvent(type,props);
-        //return safeMixin(e, props);
-        return new Event(type,props);
-    };
-
-    return events.createEvent = createEvent;	
-});
-define('skylark-langx-events/main',[
-	"./events",
-	"./Event",
-	"./Listener",
-	"./Emitter",
-	"./createEvent"
-],function(events){
-	return events;
-});
-define('skylark-langx-events', ['skylark-langx-events/main'], function (main) { return main; });
-
 define('skylark-langx/events',[
 	"skylark-langx-events"
 ],function(events){
@@ -13123,8 +13123,10 @@ define('skylark-domx-files/main',[
 define('skylark-domx-files', ['skylark-domx-files/main'], function (main) { return main; });
 
 define('skylark-widgets-base/Widget',[
-  "skylark-langx/skylark",
-  "skylark-langx/langx",
+  "skylark-langx-ns",
+  "skylark-langx-types",
+  "skylark-langx-objects",
+  "skylark-langx-events",
   "skylark-domx-browser",
   "skylark-domx-data",
   "skylark-domx-eventer",
@@ -13137,7 +13139,7 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
+],function(skylark,types,objects,events,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -13147,7 +13149,7 @@ define('skylark-widgets-base/Widget',[
     _elmx : elmx,
 
     _construct : function(elm,options) {
-        if (langx.isHtmlNode(elm)) {
+        if (types.isHtmlNode(elm)) {
           options = this._parse(elm,options);
         } else {
           options = elm;
@@ -13176,7 +13178,7 @@ define('skylark-widgets-base/Widget',[
           for (var categoryName in addonCategoryOptions) {
               for (var i =0;i < addonCategoryOptions[categoryName].length; i++ ) {
                 var addonOption = addonCategoryOptions[categoryName][i];
-                if (langx.isString(addonOption)) {
+                if (types.isString(addonOption)) {
                   var addonName = addonOption,
                       addonSetting = addons[categoryName][addonName],
                       addonCtor = addonSetting.ctor ? addonSetting.ctor : addonSetting;
@@ -13207,7 +13209,7 @@ define('skylark-widgets-base/Widget',[
       if (optionsAttr) {
          //var options1 = JSON.parse("{" + optionsAttr + "}");
          var options1 = eval("({" + optionsAttr + "})");
-         options = langx.mixin(options1,options); 
+         options = objects.mixin(options1,options); 
       }
       return options || {};
     },
@@ -13322,9 +13324,9 @@ define('skylark-widgets-base/Widget',[
       var category = this._addons[categoryName] = this._addons[categoryName] || {};
 
       if (settings == undefined) {
-        return langx.clone(category || null);
+        return objects.clone(category || null);
       } else {
-        langx.mixin(category,settings);
+        objects.mixin(category,settings);
       }
     },
 
@@ -13475,10 +13477,10 @@ define('skylark-widgets-base/Widget',[
     },
 
     emit : function(type,params) {
-      var e = langx.Emitter.createEvent(type,{
+      var e = events.createEvent(type,{
         data : params
       });
-      return langx.Emitter.prototype.emit.call(this,e,params);
+      return events.Emitter.prototype.emit.call(this,e,params);
     },
 
     /**

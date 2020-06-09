@@ -1,6 +1,8 @@
 define([
-  "skylark-langx/skylark",
-  "skylark-langx/langx",
+  "skylark-langx-ns",
+  "skylark-langx-types",
+  "skylark-langx-objects",
+  "skylark-langx-events",
   "skylark-domx-browser",
   "skylark-domx-data",
   "skylark-domx-eventer",
@@ -13,7 +15,7 @@ define([
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,langx,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
+],function(skylark,types,objects,events,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -23,7 +25,7 @@ define([
     _elmx : elmx,
 
     _construct : function(elm,options) {
-        if (langx.isHtmlNode(elm)) {
+        if (types.isHtmlNode(elm)) {
           options = this._parse(elm,options);
         } else {
           options = elm;
@@ -52,7 +54,7 @@ define([
           for (var categoryName in addonCategoryOptions) {
               for (var i =0;i < addonCategoryOptions[categoryName].length; i++ ) {
                 var addonOption = addonCategoryOptions[categoryName][i];
-                if (langx.isString(addonOption)) {
+                if (types.isString(addonOption)) {
                   var addonName = addonOption,
                       addonSetting = addons[categoryName][addonName],
                       addonCtor = addonSetting.ctor ? addonSetting.ctor : addonSetting;
@@ -83,7 +85,7 @@ define([
       if (optionsAttr) {
          //var options1 = JSON.parse("{" + optionsAttr + "}");
          var options1 = eval("({" + optionsAttr + "})");
-         options = langx.mixin(options1,options); 
+         options = objects.mixin(options1,options); 
       }
       return options || {};
     },
@@ -198,9 +200,9 @@ define([
       var category = this._addons[categoryName] = this._addons[categoryName] || {};
 
       if (settings == undefined) {
-        return langx.clone(category || null);
+        return objects.clone(category || null);
       } else {
-        langx.mixin(category,settings);
+        objects.mixin(category,settings);
       }
     },
 
@@ -351,10 +353,10 @@ define([
     },
 
     emit : function(type,params) {
-      var e = langx.Emitter.createEvent(type,{
+      var e = events.createEvent(type,{
         data : params
       });
-      return langx.Emitter.prototype.emit.call(this,e,params);
+      return events.Emitter.prototype.emit.call(this,e,params);
     },
 
     /**
