@@ -11783,13 +11783,13 @@ define('skylark-domx-plugins/plugins',[
             return setTimeout( handlerProxy, delay || 0 );
         },
 
-        _velm : function(elm) {
+        elmx : function(elm) {
             elm = elm || this._elm;
             return elmx(elm);
 
         },
 
-        _query : function(elm) {
+        $ : function(elm) {
             elm = elm || this._elm;
             return $(elm);
         },
@@ -11866,6 +11866,10 @@ define('skylark-domx-plugins/plugins',[
 
     });
 
+    Plugin.instantiate = function(elm,options) {
+        return instantiate(elm,this.prototype.pluginName,options);
+    };
+    
     $.fn.plugin = function(name,options) {
         var args = slice.call( arguments, 1 ),
             self = this,
@@ -11879,7 +11883,7 @@ define('skylark-domx-plugins/plugins',[
 
     elmx.partial("plugin",function(name,options) {
         var args = slice.call( arguments, 1 );
-        return instantiate.apply(this,[this.domNode,name].concat(args));
+        return instantiate.apply(this,[this._elm,name].concat(args));
     }); 
 
 
