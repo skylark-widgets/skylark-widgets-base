@@ -2158,7 +2158,7 @@ define('skylark-langx-events/Emitter',[
     });
 
 
-    return　events.Emitter = Emitter;
+    return events.Emitter = Emitter;
 
 });
 define('skylark-langx/Emitter',[
