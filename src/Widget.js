@@ -3,6 +3,7 @@ define([
   "skylark-langx-types",
   "skylark-langx-objects",
   "skylark-langx-events",
+  "skylark-langx-numbers/Vector2",
   "skylark-domx-browser",
   "skylark-domx-data",
   "skylark-domx-eventer",
@@ -15,21 +16,29 @@ define([
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base"
-],function(skylark,types,objects,events,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
+],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
 
 /*---------------------------------------------------------------------------------*/
 
   var Widget = plugins.Plugin.inherit({
     klassName: "Widget",
 
-    _elmx : elmx,
-
-    _construct : function(elm,options) {
+    _construct : function(parent,elm,options) {
+        if (parent && !(parent instanceof Widget)) {
+           options = elm;
+           elm = parent;
+           parent = null;
+        }
         if (types.isHtmlNode(elm)) {
           options = this._parse(elm,options);
         } else {
           options = elm;
           elm = null;
+        }
+        if (types.isString(options)) {
+          options = {
+            tagName : options
+          };
         }
         this.overrided(elm,options);
 
@@ -37,12 +46,44 @@ define([
           this._velm = this._create();
           this._elm = this._velm.elm();
         } else {
-          this._velm = elmx(this._elm);
+          this._velm = this.elmx(this._elm);
         }
         
         Object.defineProperty(this,"state",{
           value :this.options.state || new HashMap()
         });
+
+        /** 
+         * True if the element is visible.
+         *
+         * @attribute visible
+         * @type {Boolean}
+         */
+        this.visible = true;
+        
+        /**
+         * Size of this component in px.
+         *
+         * @attribute size
+         * @type {Vector2}
+         */
+        this.size = new Vector2(0, 0);
+        
+        /**
+         * Position of this component relatively to its parent in px.
+         *
+         * @attribute position
+         * @type {Vector2}
+         */
+        this.position = new Vector2(0, 0);
+
+        /**
+         * Positioning mode, indicates how to anchor the component.
+         *
+         * @attribute mode
+         * @type {Number}
+         */
+        this._mode = Widget.TOP_LEFT;
 
         //this.state = this.options.state || new Map();
         this._init();
@@ -67,12 +108,14 @@ define([
           }
         }
 
-        if (this._elm.parentElement) {
-          // The widget is already in document
-          this._startup();
+        if (parent) {
+          this.parent(parent);
         }
-
-     },
+        //if (this._elm.parentElement) {
+        //  // The widget is already in document
+        //  this._startup();
+        //}
+    },
 
     /**
      * Parses widget options from attached element.
@@ -90,7 +133,6 @@ define([
       return options || {};
     },
 
-
     /**
      * Create html element for this widget.
      * This is a callback method called by constructor when attached element is not specified.
@@ -99,9 +141,19 @@ define([
     _create : function() {
         var template = this.options.template;
         if (template) {
-          return this._elmx(template);
+          return this.elmx(template);
         } else {
-          throw new Error("The template is not existed in options!");
+          var tagName = this.options.tagName;
+          if (tagName) {
+            return this.elmx(noder.createElement(tagName,{
+              style : {
+                position : "absolute",
+                overflow : "hidden"
+              }
+            }))
+          } else {
+            throw new Error("The template or tagName is not existed in options!");
+          }
         }
     },
 
@@ -129,6 +181,48 @@ define([
      */
     _startup : function() {
 
+    },
+
+    /**
+     * Update the position of this widget.
+     * 
+     * @method updatePosition
+     */
+    _updatePosition : function(mode) {
+      if(mode !== undefined) {
+        this._mode = mode;
+      }
+
+      if(this._mode === Widget.TOP_LEFT || this._mode === Widget.TOP_RIGHT) {
+        this._elm.style.top = this.position.y + "px";
+      } else {
+        this._elm.style.bottom = this.position.y + "px";
+      }
+
+      if(this._mode === Widget.TOP_LEFT || this._mode === Widget.BOTTOM_LEFT) {
+        this._elm.style.left = this.position.x + "px";
+      } else {
+        this._elm.style.right = this.position.x + "px";
+      }
+    },
+
+    /**
+     * Update the size of this widget.
+     * 
+     * @method updateSize
+     */
+    _updateSize : function(){
+      this._elm.style.width = this.size.x + "px";
+      this._elm.style.height = this.size.y + "px";
+    },
+
+    /**
+     * Update the visibility of this widget.
+     *
+     * @method updateVisibility
+     */
+    _updateVisibility : function() {
+      this._elm.style.display = this.visible ? "block" : "none";
     },
 
 
@@ -300,6 +394,29 @@ define([
       return this;
     },
 
+
+    /** 
+     * Add a CSS class to the base DOM element of this Element.
+     * 
+     * @method addClass
+     * @param {String} name Name of the class to be added.
+     */
+    addClass : function(name){
+      this._velm.addClass(name);
+      return this;
+    },
+
+    /** 
+     * Remove a CSS class from the base DOM element of this Element.
+     * 
+     * @method removeClass
+     * @param {String} name Name of the class to be removed.
+     */
+    removeClass: function(name) {
+      this._velm.removeClass(name);
+      return this;
+    },
+
     /**
      * Sets the specified aria property.
      *
@@ -330,6 +447,17 @@ define([
         return ret == velm ? this : ret;
     },
 
+    /**
+     * Calculate the position of the container to make it centered.
+     *
+     * Calculated relatively to its parent size.
+     * 
+     * @method center
+     */
+    center : function() {
+      this.position.set((this.parent.size.x - this.size.x) / 2, (this.parent.size.y - this.size.y) / 2);
+    },
+
     css: function (name, value) {
         var velm = this._velm,
             ret = velm.css(name, value);
@@ -340,6 +468,15 @@ define([
         var velm = this._velm,
             ret = velm.data(name,value);
         return ret == velm ? this : ret;
+    },
+
+    parent : function(parent) {
+      if (parent) {
+        this._parent = parent;
+        this.attach(parent._elm);
+      } else {
+        return this._parent;
+      }
     },
 
     prop: function (name,value) {
@@ -358,6 +495,25 @@ define([
       });
       return events.Emitter.prototype.emit.call(this,e,params);
     },
+
+    /**
+     * Update component appearance.
+     * 
+     * Should be called after changing size or position.
+     *
+     * Uses the updateVisibility and if the element is visible calls the updateSize and updatePosition (in this order) methods to update the interface.
+     * 
+     * @method update
+     */
+    update : function() {
+      this._updateVisibility();
+
+      if(this.visible) {
+        this._updateSize();
+        this._updatePosition();
+      }
+    },
+
 
     /**
      *  Attach the current widget element to dom document.
@@ -387,6 +543,42 @@ define([
       this._velm.remove();
     }
   });
+
+  /**
+   * Top-left positioning.
+   *
+   * @static
+   * @attribute TOP_LEFT
+   * @type {Number}
+   */
+  Widget.TOP_LEFT = 0;
+
+  /**
+   * Top-right positioning.
+   *
+   * @static
+   * @attribute TOP_RIGHT
+   * @type {Number}
+   */
+  Widget.TOP_RIGHT = 1;
+
+  /**
+   * Bottom-left positioning.
+   *
+   * @static
+   * @attribute BOTTOM_LEFT
+   * @type {Number}
+   */
+  Widget.BOTTOM_LEFT = 2;
+
+  /**
+   * Bottom-right positioning.
+   *
+   * @static
+   * @attribute BOTTOM_RIGHT
+   * @type {Number}
+   */
+  Widget.BOTTOM_RIGHT = 3;
 
   Widget.inherit = function(meta) {
     var ctor = plugins.Plugin.inherit.apply(this,arguments);
