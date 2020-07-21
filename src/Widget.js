@@ -15,8 +15,9 @@ define([
   "skylark-domx-fx",
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
-  "./base"
-],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
+  "./base",
+  "./SkinManager"
+],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base,SkinManager){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -333,6 +334,11 @@ define([
       var self = this;
           children = new ArrayList();
       return children;
+    },
+
+
+    getSkin : function() {
+      return SkinManager.get();
     },
 
     /**

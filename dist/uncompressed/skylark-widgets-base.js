@@ -631,6 +631,39 @@ define('skylark-langx-numbers/Vector2',[
 	return numbers.Vector2 = Vector2 ;
 });
 
+define('skylark-widgets-base/SkinManager',[
+],function(){	
+	"use strict";
+
+	function SkinManager(){}
+
+	var list = [],
+		skins = [];
+
+	//Add skin to list
+	function register(skin, name) {
+		list.push(name);
+		skins[name] = skin;
+	}
+
+	//Get a skin instance
+	function get(name) {
+		if (!name) {
+			name = list[0];
+		}
+		return new skins[name]();
+	};
+
+	function getList() {
+		return list.slice();
+	}
+
+	return {
+		register,
+		get,
+		getList
+	};
+});
 define('skylark-widgets-base/Widget',[
   "skylark-langx-ns",
   "skylark-langx-types",
@@ -648,8 +681,9 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-fx",
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
-  "./base"
-],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base){
+  "./base",
+  "./SkinManager"
+],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base,SkinManager){
 
 /*---------------------------------------------------------------------------------*/
 
@@ -968,6 +1002,11 @@ define('skylark-widgets-base/Widget',[
       return children;
     },
 
+
+    getSkin : function() {
+      return SkinManager.get();
+    },
+
     /**
      * Sets the visible state to true.
      *
@@ -1267,46 +1306,12 @@ define('skylark-widgets-base/Widget',[
   return base.Widget = Widget;
 });
 
-define('skylark-widgets-base/SkinManager',[
-],function(){	
-	"use strict";
-
-	function SkinManager(){}
-
-	var list = [],
-		skins = [];
-
-	//Add skin to list
-	function register(skin, name) {
-		list.push(name);
-		skins[name] = skin;
-	}
-
-	//Get a skin instance
-	function get(name) {
-		if (!name) {
-			name = list[0];
-		}
-		return new skins[name]();
-	};
-
-	function getList() {
-		return list.slice();
-	}
-
-	return {
-		register,
-		get,
-		getList
-	};
-});
 define('skylark-widgets-base/SkinDark',[
 	"./SkinManager"
 ],function(SkinManager){	
 	"use strict";
 
-	function SkinDark()
-	{
+	function SkinDark() {
 		this.font = "Arial";
 
 		//Color

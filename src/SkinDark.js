@@ -3,8 +3,7 @@ define([
 ],function(SkinManager){	
 	"use strict";
 
-	function SkinDark()
-	{
+	function SkinDark() {
 		this.font = "Arial";
 
 		//Color
