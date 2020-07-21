@@ -2,7 +2,9 @@ define([
 	"./base",
 	"./Action",
 	"./ActionManager",
-	"./Widget"
+	"./Widget",
+	"./SkinManager",
+	"./SkinDark"
 ],function(base){
 	return base;
 });

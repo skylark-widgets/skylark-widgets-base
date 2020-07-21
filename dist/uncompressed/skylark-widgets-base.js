@@ -1267,11 +1267,85 @@ define('skylark-widgets-base/Widget',[
   return base.Widget = Widget;
 });
 
+define('skylark-widgets-base/SkinManager',[
+],function(){	
+	"use strict";
+
+	function SkinManager(){}
+
+	var list = [],
+		skins = [];
+
+	//Add skin to list
+	function register(skin, name) {
+		list.push(name);
+		skins[name] = skin;
+	}
+
+	//Get a skin instance
+	function get(name) {
+		if (!name) {
+			name = list[0];
+		}
+		return new skins[name]();
+	};
+
+	function getList() {
+		return list.slice();
+	}
+
+	return {
+		register,
+		get,
+		getList
+	};
+});
+define('skylark-widgets-base/SkinDark',[
+	"./SkinManager"
+],function(SkinManager){	
+	"use strict";
+
+	function SkinDark()
+	{
+		this.font = "Arial";
+
+		//Color
+		this.barColor = "#222222";
+		this.sepColor = "#292929";
+		this.panelColor = "#333333";
+		this.resizeTabColor = "#222222";
+		this.boxColor = "#444444";
+		this.textColor = "#FFFFFF";
+		this.iconColor = "#FFFFFF";
+
+		//Button
+		this.buttonColor = "#222222";
+		this.buttonOverColor = "#555555";
+		this.buttonLightColor = "#333333";
+		
+		//Audio player
+		this.audioTrack = "#222222";
+		this.audioScrubber = "#FFFFFF";
+		this.audioProgress = "#555555";
+
+		//Body
+		document.body.style.fontFamily = this.font;
+		document.body.style.color = this.textColor;
+		document.body.style.fontSize = "12px";
+	}
+
+	SkinManager.register(SkinDark, "dark");
+
+	return SkinDark;
+});
+
 define('skylark-widgets-base/main',[
 	"./base",
 	"./Action",
 	"./ActionManager",
-	"./Widget"
+	"./Widget",
+	"./SkinManager",
+	"./SkinDark"
 ],function(base){
 	return base;
 });
