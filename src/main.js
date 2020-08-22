@@ -1,7 +1,5 @@
 define([
 	"./base",
-	"./Action",
-	"./ActionManager",
 	"./Widget",
 	"./SkinManager",
 	"./SkinDark"

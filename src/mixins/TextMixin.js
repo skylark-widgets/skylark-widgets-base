@@ -16,7 +16,40 @@ define([
 	 */
 
 	var TextMixin = {
+		_buildTextSpan : function() {
+			var skin = this.getSkin();
 
+			this._elm.style.pointerEvents = "none";
+			//this._elm.style.color = Editor.theme.textColor;
+			this._elm.style.color = skin.textColor;
+			this._elm.style.display = "flex";
+
+			/** 
+			 * Span DOM element used to represent the text.
+			 *
+			 * @attribute span
+			 * @type {DOM}
+		 	 */
+			this.span = document.createElement("span");
+			this.span.style.overflow = "hidden";
+			this._elm.appendChild(this.span);
+
+			//Text
+			this.text = document.createTextNode("");
+			this.span.appendChild(this.text);
+
+			/**
+			 * If set to true the text container will automatically fit the text size.
+			 *
+			 * @attribute fitContent
+			 * @type {Boolean}
+			 */
+			this.fitContent = false;
+
+			this.allowWordBreak(false);
+			this.setVerticalAlignment(TextMixinCENTER);
+			this.setAlignment(TextMixinCENTER);		
+		},
 
 		/**
 		 * Set font to use for the text.
@@ -102,7 +135,7 @@ define([
 		 * @param {Number} overflow
 		 */
 		setOverflow : function(overflow) {
-			if(overflow === Text.ELLIPSIS) {
+			if(overflow === TextMixinELLIPSIS) {
 				this.span.style.whiteSpace = "nowrap";
 				this.span.style.textOverflow = "ellipsis";
 			} else 	{
@@ -113,21 +146,21 @@ define([
 
 		/**
 		 * Set text horizontal alignment.
-		 *  - Text.CENTER
-		 *  - Text.LEFT
-		 *  - Text.RIGHT
+		 *  - TextMixinCENTER
+		 *  - TextMixinLEFT
+		 *  - TextMixinRIGHT
 		 * 
 		 * @method setAlignment
 		 * @param {Number} align Alingment mode.
 		 */
 		setAlignment : function(align) 	{
-			if(align === Text.CENTER) {
+			if(align === TextMixinCENTER) {
 				this._elm.style.justifyContent = "center";
 				this._elm.style.textAlign = "center";
-			} else if(align === Text.LEFT) {
+			} else if(align === TextMixinLEFT) {
 				this._elm.style.justifyContent = "flex-start";
 				this._elm.style.textAlign = "left";
-			} else if(align === Text.RIGHT) {
+			} else if(align === TextMixinRIGHT) {
 				this._elm.style.justifyContent = "flex-end";
 				this._elm.style.textAlign = "right";
 			}
@@ -135,19 +168,19 @@ define([
 
 		/**
 		 * Set text vertical alignment.
-		 *  - Text.CENTER
-		 *  - Text.TOP
-		 *  - Text.BOTTOM
+		 *  - TextMixinCENTER
+		 *  - TextMixinTOP
+		 *  - TextMixinBOTTOM
 		 * 
 		 * @method setVerticalAlignment
 		 * @param {Number} align Alingment mode.
 		 */
 		setVerticalAlignment : function(align) {
-			if(align === Text.CENTER) {
+			if(align === TextMixinCENTER) {
 				this._elm.style.alignItems = "center";
-			} else if(align === Text.TOP) {
+			} else if(align === TextMixinTOP) {
 		 		this._elm.style.alignItems = "flex-start";
-			} else if(align === Text.BOTTOM) {
+			} else if(align === TextMixinBOTTOM) {
 				this._elm.style.alignItems = "flex-end";
 			}
 		},
@@ -183,7 +216,16 @@ define([
 			}
 			
 			Widget.prototype._updateSize.call(this);
-		}
+		},
+
+		CENTER : 0,
+		LEFT : 1,
+	    RIGHT : 2,
+	    TOP : 3,
+	    BOTTOM : 4,
+
+	    CLIP : 10,
+	    ELLIPSIS : 11
 
 	};
 
