@@ -16,7 +16,7 @@ define([
 	 */
 
 	var TextMixin = {
-		_buildTextSpan : function() {
+		_buildText : function() {
 			var skin = this.getSkin();
 
 			this._elm.style.pointerEvents = "none";
@@ -47,8 +47,8 @@ define([
 			this.fitContent = false;
 
 			this.allowWordBreak(false);
-			this.setVerticalAlignment(TextMixinCENTER);
-			this.setAlignment(TextMixinCENTER);		
+			this.setVerticalAlignment(TextMixin.CENTER);
+			this.setAlignment(TextMixin.CENTER);		
 		},
 
 		/**
@@ -135,7 +135,7 @@ define([
 		 * @param {Number} overflow
 		 */
 		setOverflow : function(overflow) {
-			if(overflow === TextMixinELLIPSIS) {
+			if(overflow === TextMixin.ELLIPSIS) {
 				this.span.style.whiteSpace = "nowrap";
 				this.span.style.textOverflow = "ellipsis";
 			} else 	{
@@ -146,21 +146,21 @@ define([
 
 		/**
 		 * Set text horizontal alignment.
-		 *  - TextMixinCENTER
-		 *  - TextMixinLEFT
-		 *  - TextMixinRIGHT
+		 *  - TextMixin.CENTER
+		 *  - TextMixin.LEFT
+		 *  - TextMixin.RIGHT
 		 * 
 		 * @method setAlignment
 		 * @param {Number} align Alingment mode.
 		 */
 		setAlignment : function(align) 	{
-			if(align === TextMixinCENTER) {
+			if(align === TextMixin.CENTER) {
 				this._elm.style.justifyContent = "center";
 				this._elm.style.textAlign = "center";
-			} else if(align === TextMixinLEFT) {
+			} else if(align === TextMixin.LEFT) {
 				this._elm.style.justifyContent = "flex-start";
 				this._elm.style.textAlign = "left";
-			} else if(align === TextMixinRIGHT) {
+			} else if(align === TextMixin.RIGHT) {
 				this._elm.style.justifyContent = "flex-end";
 				this._elm.style.textAlign = "right";
 			}
@@ -168,19 +168,19 @@ define([
 
 		/**
 		 * Set text vertical alignment.
-		 *  - TextMixinCENTER
-		 *  - TextMixinTOP
-		 *  - TextMixinBOTTOM
+		 *  - TextMixin.CENTER
+		 *  - TextMixin.TOP
+		 *  - TextMixin.BOTTOM
 		 * 
 		 * @method setVerticalAlignment
 		 * @param {Number} align Alingment mode.
 		 */
 		setVerticalAlignment : function(align) {
-			if(align === TextMixinCENTER) {
+			if(align === TextMixin.CENTER) {
 				this._elm.style.alignItems = "center";
-			} else if(align === TextMixinTOP) {
+			} else if(align === TextMixin.TOP) {
 		 		this._elm.style.alignItems = "flex-start";
-			} else if(align === TextMixinBOTTOM) {
+			} else if(align === TextMixin.BOTTOM) {
 				this._elm.style.alignItems = "flex-end";
 			}
 		},
@@ -205,17 +205,13 @@ define([
 			this.span.style.margin = margin + "px";
 		},
 
-		_updateVisibility : function() {
-			this._elm.style.display = this.visible ? "flex" : "none";
-		},
-
-		_updateSize : function() {
+		updateSize : function() {
 			if(this.fitContent) { 
 				this.size.x = this.span.clientWidth;
 				this.size.y = this.span.clientHeight;
 			}
 			
-			Widget.prototype._updateSize.call(this);
+			Widget.prototype.updateSize.call(this);
 		},
 
 		CENTER : 0,
