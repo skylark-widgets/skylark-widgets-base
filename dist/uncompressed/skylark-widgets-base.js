@@ -646,15 +646,15 @@ define('skylark-widgets-base/Widget',[
         this.size = new Vector2(0, 0);
         
         /**
-         * Position of this component relatively to its parent in px.
+         * Location of this component relatively to its parent in px.
          *
-         * @attribute position
+         * @attribute location
          * @type {Vector2}
          */
-        this.position = new Vector2(0, 0);
+        this.location = new Vector2(0, 0);
 
         /**
-         * Positioning mode, indicates how to anchor the component.
+         * Locationing mode, indicates how to anchor the component.
          *
          * @attribute mode
          * @type {Number}
@@ -760,25 +760,25 @@ define('skylark-widgets-base/Widget',[
     },
 
     /**
-     * Update the position of this widget.
+     * Update the location of this widget.
      * 
-     * @method updatePosition
+     * @method updateLocation
      */
-    _updatePosition : function(mode) {
+    _updateLocation : function(mode) {
       if(mode !== undefined) {
         this._mode = mode;
       }
 
       if(this._mode === Widget.TOP_LEFT || this._mode === Widget.TOP_RIGHT) {
-        this._elm.style.top = this.position.y + "px";
+        this._elm.style.top = this.location.y + "px";
       } else {
-        this._elm.style.bottom = this.position.y + "px";
+        this._elm.style.bottom = this.location.y + "px";
       }
 
       if(this._mode === Widget.TOP_LEFT || this._mode === Widget.BOTTOM_LEFT) {
-        this._elm.style.left = this.position.x + "px";
+        this._elm.style.left = this.location.x + "px";
       } else {
-        this._elm.style.right = this.position.x + "px";
+        this._elm.style.right = this.location.x + "px";
       }
     },
 
@@ -787,7 +787,7 @@ define('skylark-widgets-base/Widget',[
      * 
      * @method updateSize
      */
-    _updateSize : function(){
+    updateSize : function(){
       this._elm.style.width = this.size.x + "px";
       this._elm.style.height = this.size.y + "px";
     },
@@ -797,7 +797,7 @@ define('skylark-widgets-base/Widget',[
      *
      * @method updateVisibility
      */
-    _updateVisibility : function() {
+    updateVisibility : function() {
       this._elm.style.display = this.visible ? "block" : "none";
     },
 
@@ -1028,15 +1028,25 @@ define('skylark-widgets-base/Widget',[
         return ret == velm ? this : ret;
     },
 
+    getAttr : function(name) {
+      return this._velm.attr(name);
+    },
+
+    setAttr : function(name,value) {
+      this._velm.attr(name,value);
+      return this;
+    },
+
+
     /**
-     * Calculate the position of the container to make it centered.
+     * Calculate the location of the container to make it centered.
      *
      * Calculated relatively to its parent size.
      * 
      * @method center
      */
     center : function() {
-      this.position.set((this.parent.size.x - this.size.x) / 2, (this.parent.size.y - this.size.y) / 2);
+      this.location.set((this.parent.size.x - this.size.x) / 2, (this.parent.size.y - this.size.y) / 2);
     },
 
     css: function (name, value) {
@@ -1045,11 +1055,31 @@ define('skylark-widgets-base/Widget',[
         return ret == velm ? this : ret;
     },
 
+    getStyle : function(name) {
+      return this._velm.css(name);
+    },
+
+    setStyle : function(name,value) {
+      this._velm.css(name,value);
+      return this;
+    },
+
     data: function (name, value) {
         var velm = this._velm,
             ret = velm.data(name,value);
         return ret == velm ? this : ret;
     },
+
+
+    getData : function(name) {
+      return this._velm.data(name);
+    },
+
+    setData : function(name,value) {
+      this._velm.data(name,value);
+      return this;
+    },
+
 
     parent : function(parent) {
       if (parent) {
@@ -1060,10 +1090,30 @@ define('skylark-widgets-base/Widget',[
       }
     },
 
+    getParent : function() {
+      return this._parent;
+    },
+
+    setParent : function(parent) {
+      this._parent = parent;
+      this.attach(parent._elm);
+      return this;
+    },
+
+
     prop: function (name,value) {
         var velm = this._velm,
             ret = velm.prop(name,value);
         return ret == velm ? this : ret;
+    },
+
+    getProp : function(name) {
+      return this._velm.prop(name);
+    },
+
+    setProp : function(name,value) {
+      this._velm.prop(name,value);
+      return this;
     },
 
     throb: function(params) {
@@ -1080,9 +1130,9 @@ define('skylark-widgets-base/Widget',[
     /**
      * Update component appearance.
      * 
-     * Should be called after changing size or position.
+     * Should be called after changing size or location.
      *
-     * Uses the updateVisibility and if the element is visible calls the updateSize and updatePosition (in this order) methods to update the interface.
+     * Uses the updateVisibility and if the element is visible calls the updateSize and updateLocation (in this order) methods to update the interface.
      * 
      * @method update
      */
@@ -1091,7 +1141,7 @@ define('skylark-widgets-base/Widget',[
 
       if(this.visible) {
         this._updateSize();
-        this._updatePosition();
+        this._updateLocation();
       }
     },
 
@@ -1126,7 +1176,7 @@ define('skylark-widgets-base/Widget',[
   });
 
   /**
-   * Top-left positioning.
+   * Top-left locationing.
    *
    * @static
    * @attribute TOP_LEFT
@@ -1135,7 +1185,7 @@ define('skylark-widgets-base/Widget',[
   Widget.TOP_LEFT = 0;
 
   /**
-   * Top-right positioning.
+   * Top-right locationing.
    *
    * @static
    * @attribute TOP_RIGHT
@@ -1144,7 +1194,7 @@ define('skylark-widgets-base/Widget',[
   Widget.TOP_RIGHT = 1;
 
   /**
-   * Bottom-left positioning.
+   * Bottom-left locationing.
    *
    * @static
    * @attribute BOTTOM_LEFT
@@ -1153,7 +1203,7 @@ define('skylark-widgets-base/Widget',[
   Widget.BOTTOM_LEFT = 2;
 
   /**
-   * Bottom-right positioning.
+   * Bottom-right locationing.
    *
    * @static
    * @attribute BOTTOM_RIGHT
