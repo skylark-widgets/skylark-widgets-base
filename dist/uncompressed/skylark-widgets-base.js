@@ -151,7 +151,7 @@ define('skylark-widgets-base/Widget',[
     klassName: "Widget",
 
     _construct : function(parent,elm,options) {
-        if (parent && !(parent instanceof Widget)) {
+        if (parent && !(parent instanceof Widget || parent.element)) {
            options = elm;
            elm = parent;
            parent = null;
@@ -188,6 +188,10 @@ define('skylark-widgets-base/Widget',[
          */
         this.visible = true;
         
+
+        this.element.style.position = "absolute";
+        this.element.style.overflow = "hidden";
+
         /**
          * Size of this component in px.
          *
@@ -315,7 +319,7 @@ define('skylark-widgets-base/Widget',[
      * 
      * @method updateLocation
      */
-    _updateLocation : function(mode) {
+    updateLocation : function(mode) {
       if(mode !== undefined) {
         this._mode = mode;
       }
@@ -342,6 +346,18 @@ define('skylark-widgets-base/Widget',[
       this._elm.style.width = this.size.x + "px";
       this._elm.style.height = this.size.y + "px";
     },
+
+
+    /**
+     * Update visibility of this element.
+     *
+     * @method setVisibility
+     */
+    setVisibility : function(visible)   {
+      this.visible = visible;
+      this.updateVisibility();
+    },
+
 
     /**
      * Update the visibility of this widget.
@@ -635,7 +651,7 @@ define('skylark-widgets-base/Widget',[
     parent : function(parent) {
       if (parent) {
         this._parent = parent;
-        this.attach(parent._elm);
+        this.attach(parent._elm || parent.element);
       } else {
         return this._parent;
       }
@@ -647,7 +663,7 @@ define('skylark-widgets-base/Widget',[
 
     setParent : function(parent) {
       this._parent = parent;
-      this.attach(parent._elm);
+      this.attach(parent._elm || parent.element);
       return this;
     },
 
@@ -688,11 +704,11 @@ define('skylark-widgets-base/Widget',[
      * @method update
      */
     update : function() {
-      this._updateVisibility();
+      this.updateVisibility();
 
       if(this.visible) {
-        this._updateSize();
-        this._updateLocation();
+        this.updateSize();
+        this.updateLocation();
       }
     },
 
@@ -704,7 +720,7 @@ define('skylark-widgets-base/Widget',[
      * @return {Widget} This Widget.
      */
     attach : function(target,position){
-        var elm = target;
+        var elm = target.element || target;
         if (!position || position=="child") {
             noder.append(elm,this._elm);
         } else  if (position == "before") {
@@ -723,8 +739,104 @@ define('skylark-widgets-base/Widget',[
      */
     detach : function() {
       this._velm.remove();
-    }
+    },
+
+    preventDragEvents : function() {
+
+    },
+
+
+    element : {
+      get : function() {
+        return this._elm;
+      }
+    },
+
+    position : {
+      get : function() {
+        return this.location;
+      }
+    },
+
+    /**
+     * Set alt text, that is displayed when the mouse is over the element. Returns the element created that is attached to the document body.
+     *
+     * @method setAltText
+     * @param {String} altText Alt text.
+     */
+    setAltText : function(altText)   {
+      var element = document.createElement("div");
+      element.style.position = "absolute";
+      element.style.display = "none";
+      element.style.alignItems = "center";
+      element.style.zIndex = "10000";
+      element.style.border = "3px solid";
+      element.style.borderRadius = "5px";
+      element.style.color = Editor.theme.textColor;
+      element.style.backgroundColor = Editor.theme.barColor;
+      element.style.borderColor = Editor.theme.barColor;
+      element.style.height = "fit-content";
+      document.body.appendChild(element);
+
+      //Text
+      var text = document.createTextNode(altText);
+      element.appendChild(text);
+
+      //Destroy
+      var destroyFunction = this.destroy;
+      this.destroy = function()
+      { 
+        destroyFunction.call(this);
+
+        if(document.body.contains(element))
+        {
+          document.body.removeChild(element);
+        }
+      };
+      
+      this._elm.style.pointerEvents = "auto"; 
+
+      //Mouse mouse move event
+      this._elm.onmousemove = function(event) {
+        element.style.display = "flex";
+        element.style.left = (event.clientX + 8) + "px";
+        element.style.top = (event.clientY - 20) + "px";
+      };
+
+      //Mouse out event
+      this._elm.onmouseout = function()  {
+        element.style.display = "none";
+      };
+
+      return element;
+    },
+
+    /**
+     * Set method to be called on component click.
+     * 
+     * @method setOnClick
+     * @param {Function} callback Function called when the component is clicked.
+     */
+    setOnClick : function(callback)  {
+      this._elm.onclick = callback;
+    },
+
+    /**
+     * Remove all DOM children from the element.
+     * 
+     * @method removeAllChildren
+     */
+    removeAllChildren : function()   {
+      while(this._elm.firstChild) {
+        this._elm.removeChild(this._elm.firstChild);
+      }
+    },
+
   });
+
+  Widget.prototype.updateInterface = Widget.prototype.update;
+  Widget.prototype.updatePosition = Widget.prototype.updateLocation;
+  Widget.prototype.attachTo = Widget.prototype.attach;
 
   /**
    * Top-left locationing.
