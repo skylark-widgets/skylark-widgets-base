@@ -3,7 +3,7 @@ define([
   "skylark-langx-types",
   "skylark-langx-objects",
   "skylark-langx-events",
-  "skylark-langx-numbers/Vector2",
+  "skylark-langx-numerics/Vector2",
   "skylark-domx-browser",
   "skylark-domx-data",
   "skylark-domx-eventer",

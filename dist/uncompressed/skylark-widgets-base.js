@@ -1,4 +1,130 @@
-define([
+/**
+ * skylark-widgets-base - The skylark widget base library.
+ * @author Hudaokeji Co.,Ltd
+ * @version v0.9.0
+ * @link www.skylarkjs.org
+ * @license MIT
+ */
+(function(factory,globals) {
+  var define = globals.define,
+      require = globals.require,
+      isAmd = (typeof define === 'function' && define.amd),
+      isCmd = (!isAmd && typeof exports !== 'undefined');
+
+  if (!isAmd && !define) {
+    var map = {};
+    function absolute(relative, base) {
+        if (relative[0]!==".") {
+          return relative;
+        }
+        var stack = base.split("/"),
+            parts = relative.split("/");
+        stack.pop(); 
+        for (var i=0; i<parts.length; i++) {
+            if (parts[i] == ".")
+                continue;
+            if (parts[i] == "..")
+                stack.pop();
+            else
+                stack.push(parts[i]);
+        }
+        return stack.join("/");
+    }
+    define = globals.define = function(id, deps, factory) {
+        if (typeof factory == 'function') {
+            map[id] = {
+                factory: factory,
+                deps: deps.map(function(dep){
+                  return absolute(dep,id);
+                }),
+                resolved: false,
+                exports: null
+            };
+            require(id);
+        } else {
+            map[id] = {
+                factory : null,
+                resolved : true,
+                exports : factory
+            };
+        }
+    };
+    require = globals.require = function(id) {
+        if (!map.hasOwnProperty(id)) {
+            throw new Error('Module ' + id + ' has not been defined');
+        }
+        var module = map[id];
+        if (!module.resolved) {
+            var args = [];
+
+            module.deps.forEach(function(dep){
+                args.push(require(dep));
+            })
+
+            module.exports = module.factory.apply(globals, args) || null;
+            module.resolved = true;
+        }
+        return module.exports;
+    };
+  }
+  
+  if (!define) {
+     throw new Error("The module utility (ex: requirejs or skylark-utils) is not loaded!");
+  }
+
+  factory(define,require);
+
+  if (!isAmd) {
+    var skylarkjs = require("skylark-langx-ns");
+
+    if (isCmd) {
+      module.exports = skylarkjs;
+    } else {
+      globals.skylarkjs  = skylarkjs;
+    }
+  }
+
+})(function(define,require) {
+
+define('skylark-widgets-base/base',[
+	"skylark-langx/skylark"
+],function(skylark){
+	return skylark.attach("widgets.base",{});
+});
+define('skylark-widgets-base/SkinManager',[
+],function(){	
+	"use strict";
+
+	function SkinManager(){}
+
+	var list = [],
+		skins = [];
+
+	//Add skin to list
+	function register(skin, name) {
+		list.push(name);
+		skins[name] = skin;
+	}
+
+	//Get a skin instance
+	function get(name) {
+		if (!name) {
+			name = list[0];
+		}
+		return new skins[name]();
+	};
+
+	function getList() {
+		return list.slice();
+	}
+
+	return {
+		register,
+		get,
+		getList
+	};
+});
+define('skylark-widgets-base/Widget',[
   "skylark-langx-ns",
   "skylark-langx-types",
   "skylark-langx-objects",
@@ -689,3 +815,55 @@ define([
 
   return base.Widget = Widget;
 });
+
+define('skylark-widgets-base/SkinDark',[
+	"./SkinManager"
+],function(SkinManager){	
+	"use strict";
+
+	function SkinDark() {
+		this.font = "Arial";
+
+		//Color
+		this.barColor = "#222222";
+		this.sepColor = "#292929";
+		this.panelColor = "#333333";
+		this.resizeTabColor = "#222222";
+		this.boxColor = "#444444";
+		this.textColor = "#FFFFFF";
+		this.iconColor = "#FFFFFF";
+
+		//Button
+		this.buttonColor = "#222222";
+		this.buttonOverColor = "#555555";
+		this.buttonLightColor = "#333333";
+		
+		//Audio player
+		this.audioTrack = "#222222";
+		this.audioScrubber = "#FFFFFF";
+		this.audioProgress = "#555555";
+
+		//Body
+		document.body.style.fontFamily = this.font;
+		document.body.style.color = this.textColor;
+		document.body.style.fontSize = "12px";
+	}
+
+	SkinManager.register(SkinDark, "dark");
+
+	return SkinDark;
+});
+
+define('skylark-widgets-base/main',[
+	"./base",
+	"./Widget",
+	"./SkinManager",
+	"./SkinDark"
+],function(base){
+	return base;
+});
+define('skylark-widgets-base', ['skylark-widgets-base/main'], function (main) { return main; });
+
+
+},this);
+//# sourceMappingURL=sourcemaps/skylark-widgets-base.js.map
