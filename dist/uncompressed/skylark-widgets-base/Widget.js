@@ -706,6 +706,19 @@ define([
       }
     },
 
+    /**
+     * Set positioning mode.
+     * 
+     * @method setMode
+     * @param {Number} setMode
+     */
+    setMode : function(mode) {
+      this._mode = mode;
+      this._elm.style.bottom = null;
+      this._elm.style.right = null;
+      this._elm.style.left = null;
+    }
+
   });
 
   Widget.prototype.updateInterface = Widget.prototype.update;
