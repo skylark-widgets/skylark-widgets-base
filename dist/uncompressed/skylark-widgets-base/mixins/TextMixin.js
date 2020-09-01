@@ -214,6 +214,10 @@ define([
 			Widget.prototype.updateSize.call(this);
 		},
 
+		updateVisibility : function() {
+			this._elm.style.display = this.visible ? "flex" : "none";
+		},
+
 		CENTER : 0,
 		LEFT : 1,
 	    RIGHT : 2,
