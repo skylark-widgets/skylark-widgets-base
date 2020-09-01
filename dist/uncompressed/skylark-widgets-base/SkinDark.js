@@ -31,7 +31,11 @@ define([
 		document.body.style.fontSize = "12px";
 	}
 
-	SkinManager.register(SkinDark, "dark");
 
-	return SkinDark;
+	var skin = new SkinDark();
+
+	SkinManager.register(skin, "dark");
+
+	return skin;
+
 });

@@ -18,7 +18,8 @@ define([
 		if (!name) {
 			name = list[0];
 		}
-		return new skins[name]();
+
+		return skins[name];
 	};
 
 	function getList() {

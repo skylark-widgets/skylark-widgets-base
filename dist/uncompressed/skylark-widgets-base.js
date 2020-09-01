@@ -111,7 +111,8 @@ define('skylark-widgets-base/SkinManager',[
 		if (!name) {
 			name = list[0];
 		}
-		return new skins[name]();
+
+		return skins[name];
 	};
 
 	function getList() {
@@ -961,9 +962,13 @@ define('skylark-widgets-base/SkinDark',[
 		document.body.style.fontSize = "12px";
 	}
 
-	SkinManager.register(SkinDark, "dark");
 
-	return SkinDark;
+	var skin = new SkinDark();
+
+	SkinManager.register(skin, "dark");
+
+	return skin;
+
 });
 
 define('skylark-widgets-base/main',[
