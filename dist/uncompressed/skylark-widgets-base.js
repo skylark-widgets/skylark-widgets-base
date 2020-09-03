@@ -1290,6 +1290,398 @@ define('skylark-widgets-base/TextPane',[
 
 	return base.TextPane = TextPane;
 });
+define('skylark-widgets-base/DualContainer',[
+	"./base",
+	"./Widget",
+],function( base, Widget){
+	"use strict";
+
+	var DualContainer = Widget.inherit({
+		"klassName" : "DualContainer",
+
+		"_construct" : function (parent) {
+			Widget.prototype._construct.call(this, parent, "div");
+
+			var skin = this.getSkin();
+
+			this._elm.style.overflow = "hidden";
+			//this._elm.style.backgroundColor = Editor.theme.panelColor;
+			this._elm.style.backgroundColor = skin.panelColor;
+
+			//Container A
+			this._elmA = null
+
+			//Container B
+			this._elmB = null
+
+			//Resize tab
+			this.resizeTab = document.createElement("div");
+			this.resizeTab.style.position = "absolute";
+			this.resizeTab.style.cursor = "e-resize";
+
+
+			//this.resizeTab.style.backgroundColor = Editor.theme.resizeTabColor;
+			this.resizeTab.style.backgroundColor = skin.resizeTabColor;
+			this._elm.appendChild(this.resizeTab);
+
+			//Resize Tab
+			this.tabPosition = 0.5;
+			this.tabPositionMax = 0.95;
+			this.tabPositionMin = 0.05;
+			this.tabSize = 5;
+			this.orientation = DualContainer.HORIZONTAL;
+
+			var self = this;
+
+			//Tab mouse down
+			//this.resizeTab.onmousedown = function(event)
+			//{
+			//	self.manager.create();
+			//};
+
+			//Tab resize event manager
+			//this.manager = new EventManager();
+			this.connect(window, "mousemove", function(event)
+			{
+				if(self.orientation === DualContainer.HORIZONTAL)
+				{	
+					self.tabPosition += event.movementX / self.size.x;
+				}
+				else if(self.orientation === DualContainer.VERTICAL)
+				{
+					self.tabPosition += event.movementY / self.size.y;
+				}
+
+				//Limit tab position
+				if(self.tabPosition > self.tabPositionMax)
+				{
+					self.tabPosition = self.tabPositionMax;
+				}
+				else if(self.tabPosition < self.tabPositionMin)
+				{
+					self.tabPosition = self.tabPositionMin;
+				}
+
+				self.updateInterface();
+			});
+
+			this.connect(window, "mouseup", function(event)
+			{
+				self.manager.destroy();
+			});
+		},
+
+		attach : function(element) 	{
+			if(this._elmA === null)
+			{
+				this.attachA(element);
+				return;
+			}
+			
+			if(this._elmB === null) {
+				this.attachB(element);
+				return;
+			}
+			
+			console.warn("nunuStudio: Cannot attach more elements.");
+		},
+
+		attachA : function(element) {
+			this._elmA = element;
+			this._elmA.attachTo(this);
+		},
+
+		attachB : function(element) {
+			this._elmB = element;
+			this._elmB.attachTo(this);
+		},
+
+		updateSize : function() {
+			Widget.prototype.updateSize.call(this);
+
+			if(this._elmA === null || this._elmB === null) 	{
+				console.log("nunuStudio: Dual container elements are null", this, this._elmA, this._elmB);
+				return;
+			}
+
+			if(this.orientation === DualContainer.HORIZONTAL) {
+				var tabPositionAbs = this.tabPosition * this.size.x;
+
+				this._elmA.position.set(0, 0);
+				this._elmA.size.set(tabPositionAbs, this.size.y);
+				this._elmA.updateInterface();
+
+				this._elmB.size.set(this.size.x - tabPositionAbs - this.tabSize, this.size.y);
+				this._elmB.position.set(this._elmA.size.x + this.tabSize, 0);
+				this._elmB.updateInterface();
+
+				this.resizeTab.style.cursor = "e-resize";
+				this.resizeTab.style.top = "0px";
+				this.resizeTab.style.left = this._elmA.size.x + "px";
+				this.resizeTab.style.width = this.tabSize + "px";
+				this.resizeTab.style.height = this.size.y + "px";
+			} else if(this.orientation === DualContainer.VERTICAL) 	{
+				var tabPositionAbs = this.tabPosition * this.size.y;
+				
+				this._elmA.position.set(0, 0);
+				this._elmA.size.set(this.size.x, tabPositionAbs);
+				this._elmA.updateInterface();
+				
+				this._elmB.size.set(this.size.x, this.size.y - tabPositionAbs - this.tabSize);
+				this._elmB.position.set(0, this._elmA.size.y + this.tabSize);
+				this._elmB.updateInterface();
+
+				this.resizeTab.style.cursor = "n-resize";
+				this.resizeTab.style.top = this._elmA.size.y + "px";
+				this.resizeTab.style.left = "0px";
+				this.resizeTab.style.width = this.size.x + "px";
+				this.resizeTab.style.height = this.tabSize + "px";
+			}
+		}
+
+	});
+
+	DualContainer.HORIZONTAL = 0;
+	DualContainer.VERTICAL = 1;
+
+
+	return base.DualContainer = DualContainer;
+});
+define('skylark-widgets-base/Panel',[
+	"./base",
+	"./Widget"
+],function(base,Widget){
+	"use strict";
+
+	/**
+	 * DOM division element.
+	 * 
+	 * @class Division
+	 * @extends {Widget}
+	 * @param {Widget} parent Parent element.
+	 */
+	var Pane = Widget.inherit({
+		"_construct" : function (parent) {
+			Widget.prototype._construct.call(this, parent, "div");
+
+			this._elm.style.overflow = "visible";
+		}
+
+	});
+
+
+	return base.Pane = Pane;
+});
+define('skylark-widgets-base/DualPanel',[
+	"./base",
+	"./Widget",
+	"./Panel"
+],function( base, Widget,Panel){
+	"use strict";
+
+
+	var DualPanel = Widget.inherit({
+		"klassName" : "DualPanel",
+
+		"_construct" : function (parent) {
+			Widget.prototype._construct.call(this, parent, "div");
+
+			var skin = this.getSkin();
+
+			this._elm.style.overflow = "hidden";
+			//this._elm.style.backgroundColor = Editor.theme.panelColor;		
+			this._elm.style.backgroundColor = skin.panelColor;
+
+			//Division A
+			this.divA = new Panel(this);
+			//this.divA.element.style.backgroundColor = Editor.theme.panelColor;
+			this.divA.element.style.backgroundColor = skin.panelColor;
+
+			//Division B
+			this.divB = new Panel(this);
+			//this.divB.element.style.backgroundColor = Editor.theme.panelColor;
+			this.divB.element.style.backgroundColor = skin.panelColor;
+			
+			//Resize tab
+			this.resizeTab = document.createWidget("div");
+			this.resizeTab.style.position = "absolute";
+			this.resizeTab.style.cursor = "e-resize";
+			//this.resizeTab.style.backgroundColor = Editor.theme.resizeTabColor;
+			this.resizeTab.style.backgroundColor = skin.resizeTabColor;
+			this._elm.appendChild(this.resizeTab);
+
+			//Resize Tab
+			this.tabPosition = 0.5;
+			this.tabPositionMax = 1;
+			this.tabPositionMin = 0;
+			this.tabSize = 5;
+			this.orientation = DualPanel.HORIZONTAL;
+
+			var self = this;
+
+			//Tab mouse down
+			//this.resizeTab.onmousedown = function(event){
+			//	self.manager.create();
+			//};
+
+			//Tab resize event manager
+			//this.manager = new EventManager();
+			this.connect(window, "mousemove", function(event){
+				if(self.orientation === DualPanel.HORIZONTAL){	
+					self.tabPosition += event.movementX / self.size.x;
+				} else if(self.orientation === DualPanel.VERTICAL) {
+					self.tabPosition += event.movementY / self.size.y;
+				}
+
+				//Limit tab position
+				if(self.tabPosition > self.tabPositionMax) {
+					self.tabPosition = self.tabPositionMax;
+				} else if(self.tabPosition < self.tabPositionMin) {
+					self.tabPosition = self.tabPositionMin;
+				}
+
+				self.updateInterface();
+				self.onResize();
+			});
+
+			this.connect(window, "mouseup", function(event) {
+				self.manager.destroy();
+			});
+
+			//onResize callback
+			this.onResize = function() 	{
+				Editor.gui.updateInterface();
+			};
+		},
+
+		setOnResize : function(callback) {
+			this.onResize = callback;
+		},
+
+		updateSize : function() {
+			Widget.prototype.updateSize.call(this);
+
+			if(this.orientation === DualPanel.HORIZONTAL) {
+				var tabPositionAbs = this.tabPosition * this.size.x;
+				
+				this.divA.position.set(0, 0);
+				this.divA.size.set(tabPositionAbs, this.size.y);
+				this.divA.updateInterface();
+
+				this.divB.size.set(this.size.x - tabPositionAbs - this.tabSize, this.size.y);
+				this.divB.position.set(this.divA.size.x + this.tabSize, 0);
+				this.divB.updateInterface();
+
+				this.resizeTab.style.cursor = "e-resize";
+				this.resizeTab.style.top = "0px";
+				this.resizeTab.style.left = this.divA.size.x + "px";
+				this.resizeTab.style.width = this.tabSize + "px";
+				this.resizeTab.style.height = this.size.y + "px";
+			} else if(this.orientation === DualPanel.VERTICAL) {
+				var tabPositionAbs = this.tabPosition * this.size.y;
+
+				this.divA.position.set(0, 0);
+				this.divA.size.set(this.size.x, tabPositionAbs);
+				this.divA.updateInterface();
+
+				this.divB.size.set(this.size.x, this.size.y - tabPositionAbs - this.tabSize);
+				this.divB.position.set(0, this.divA.size.y + this.tabSize);
+				this.divB.updateInterface();
+
+				this.resizeTab.style.cursor = "n-resize";
+				this.resizeTab.style.top = this.divA.size.y + "px";
+				this.resizeTab.style.left = "0px";
+				this.resizeTab.style.width = this.size.x + "px";
+				this.resizeTab.style.height = this.tabSize + "px";
+			}
+		}
+	});
+
+
+	DualPanel.HORIZONTAL = 0;
+	DualPanel.VERTICAL = 1;
+
+	return containers.DualPanel = DualPanel;
+});
+
+define('skylark-widgets-base/DragBuffer',[
+],function(){	
+	"use strict";
+
+	/**
+	 * The drag buffer is a global object used to store and get object being dragged.
+	 *
+	 * Objects are stored in an array and are indetified with a UUID.
+	 *
+	 * @static
+	 * @class DragBuffer
+	 */
+	var DragBuffer = {};
+
+	/**
+	 * Object drag buffer, stores objects being dragged.
+	 *
+	 * @attribute buffer
+	 */
+	DragBuffer.buffer = [];
+
+	/** 
+	 * Push elemento to drag buffer.
+	 *
+	 * Checks if element dont exist on drag buffer before inserting.
+	 *
+	 * @method push
+	 */
+	DragBuffer.push = function(obj)
+	{
+		if(DragBuffer.buffer.indexOf(obj) === -1)
+		{
+			DragBuffer.buffer.push(obj);
+		}
+	};
+
+	/** 
+	 * Get element from drag buffer using its identifier.
+	 *
+	 * @method pop
+	 * @return {Object} Object indentfied by uuid, if not found return null.
+	 */
+	DragBuffer.pop = function(uuid)
+	{
+		for(var i = 0; i < DragBuffer.buffer.length; i++)
+		{
+			if(DragBuffer.buffer[i].uuid === uuid)
+			{
+				var obj = DragBuffer.buffer[i];
+				DragBuffer.buffer.splice(i, 1);
+				return obj;
+			}
+		}
+
+		return null;
+	};
+
+	/** 
+	 * Get element from drag buffer without removing it.
+	 *
+	 * @method get
+	 * @return {Object} Object indentfied by uuid, if not found return null.
+	 */
+	DragBuffer.get = function(uuid)
+	{
+		for(var i = 0; i < DragBuffer.buffer.length; i++)
+		{
+			if(DragBuffer.buffer[i].uuid === uuid)
+			{
+				return DragBuffer.buffer[i];
+			}
+		}
+		
+		return null;
+	};
+
+	return DragBuffer;
+});
 define('skylark-widgets-base/SkinDark',[
 	"./SkinManager"
 ],function(SkinManager){	
@@ -1337,6 +1729,9 @@ define('skylark-widgets-base/main',[
 	"./Widget",
 	"./ImagePane",
 	"./TextPane",
+	"./DualContainer",
+    "./DualPanel",
+    "./DragBuffer",
 	"./SkinManager",
 	"./SkinDark"
 ],function(base){
