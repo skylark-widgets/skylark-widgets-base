@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["./base","./Widget","./ImagePane","./TextPane","./panels/DualContainer","./panels/DualPanel","./DragBuffer","./SkinManager","./SkinDark"],function(e){return e});
+define(["./base","./Widget","./ImagePane","./TextPane","./panels/DualContainer","./panels/DualPanel","./dnd/DragBuffer","./skins/SkinManager","./skins/SkinDark"],function(n){return n});
 //# sourceMappingURL=sourcemaps/main.js.map

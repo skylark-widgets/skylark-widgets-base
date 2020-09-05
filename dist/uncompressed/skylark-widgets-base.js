@@ -94,7 +94,7 @@ define('skylark-widgets-base/base',[
 		"panels" : {}
 	});
 });
-define('skylark-widgets-base/SkinManager',[
+define('skylark-widgets-base/skins/SkinManager',[
 ],function(){	
 	"use strict";
 
@@ -146,7 +146,7 @@ define('skylark-widgets-base/Widget',[
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base",
-  "./SkinManager"
+  "./skins/SkinManager"
 ],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base,SkinManager){
 
 /*---------------------------------------------------------------------------------*/
@@ -1606,7 +1606,7 @@ define('skylark-widgets-base/panels/DualPanel',[
 	return base.panels.DualPanel = DualPanel;
 });
 
-define('skylark-widgets-base/DragBuffer',[
+define('skylark-widgets-base/dnd/DragBuffer',[
 ],function(){	
 	"use strict";
 
@@ -1684,7 +1684,7 @@ define('skylark-widgets-base/DragBuffer',[
 
 	return DragBuffer;
 });
-define('skylark-widgets-base/SkinDark',[
+define('skylark-widgets-base/skins/SkinDark',[
 	"./SkinManager"
 ],function(SkinManager){	
 	"use strict";
@@ -1733,9 +1733,9 @@ define('skylark-widgets-base/main',[
 	"./TextPane",
 	"./panels/DualContainer",
     "./panels/DualPanel",
-    "./DragBuffer",
-	"./SkinManager",
-	"./SkinDark"
+    "./dnd/DragBuffer",
+	"./skins/SkinManager",
+	"./skins/SkinDark"
 ],function(base){
 	return base;
 });

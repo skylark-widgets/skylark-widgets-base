@@ -6,4 +6,4 @@
  * @license MIT
  */
 define([],function(){"use strict";var f={buffer:[],push:function(u){-1===f.buffer.indexOf(u)&&f.buffer.push(u)},pop:function(u){for(var r=0;r<f.buffer.length;r++)if(f.buffer[r].uuid===u){var e=f.buffer[r];return f.buffer.splice(r,1),e}return null},get:function(u){for(var r=0;r<f.buffer.length;r++)if(f.buffer[r].uuid===u)return f.buffer[r];return null}};return f});
-//# sourceMappingURL=sourcemaps/DragBuffer.js.map
+//# sourceMappingURL=../sourcemaps/dnd/DragBuffer.js.map

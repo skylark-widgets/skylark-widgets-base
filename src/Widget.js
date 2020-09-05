@@ -16,7 +16,7 @@ define([
   "skylark-domx-plugins",
   "skylark-data-collection/HashMap",
   "./base",
-  "./SkinManager"
+  "./skins/SkinManager"
 ],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base,SkinManager){
 
 /*---------------------------------------------------------------------------------*/

@@ -6,4 +6,4 @@
  * @license MIT
  */
 define([],function(){"use strict";var t=[],n=[];return{register:function(e,r){t.push(r),n[r]=e},get:function(e){return e||(e=t[0]),n[e]},getList:function(){return t.slice()}}});
-//# sourceMappingURL=sourcemaps/SkinManager.js.map
+//# sourceMappingURL=../sourcemaps/skins/SkinManager.js.map

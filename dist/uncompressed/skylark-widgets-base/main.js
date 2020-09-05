@@ -5,9 +5,9 @@ define([
 	"./TextPane",
 	"./panels/DualContainer",
     "./panels/DualPanel",
-    "./DragBuffer",
-	"./SkinManager",
-	"./SkinDark"
+    "./dnd/DragBuffer",
+	"./skins/SkinManager",
+	"./skins/SkinDark"
 ],function(base){
 	return base;
 });
