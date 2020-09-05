@@ -3,8 +3,8 @@ define([
 	"./Widget",
 	"./ImagePane",
 	"./TextPane",
-	"./DualContainer",
-    "./DualPanel",
+	"./panels/DualContainer",
+    "./panels/DualPanel",
     "./DragBuffer",
 	"./SkinManager",
 	"./SkinDark"

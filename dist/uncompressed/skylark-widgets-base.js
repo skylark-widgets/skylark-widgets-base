@@ -89,7 +89,10 @@
 define('skylark-widgets-base/base',[
 	"skylark-langx/skylark"
 ],function(skylark){
-	return skylark.attach("widgets.base",{});
+	return skylark.attach("widgets.base",{
+		"mixins" : {},
+		"panels" : {}
+	});
 });
 define('skylark-widgets-base/SkinManager',[
 ],function(){	
@@ -1290,17 +1293,42 @@ define('skylark-widgets-base/TextPane',[
 
 	return base.TextPane = TextPane;
 });
-define('skylark-widgets-base/DualContainer',[
-	"./base",
-	"./Widget",
-],function( base, Widget){
+define('skylark-widgets-base/panels/Panel',[
+	"../base",
+	"../Widget"
+],function(base,Widget){
 	"use strict";
 
-	var DualContainer = Widget.inherit({
+	/**
+	 * DOM division element.
+	 * 
+	 * @class Division
+	 * @extends {Widget}
+	 * @param {Widget} parent Parent element.
+	 */
+	var Panel = Widget.inherit({
+		"_construct" : function (parent) {
+			Widget.prototype._construct.call(this, parent, "div");
+
+			this._elm.style.overflow = "visible";
+		}
+
+	});
+
+
+	return base.panels.Panel = Panel;
+});
+define('skylark-widgets-base/panels/DualContainer',[
+	"../base",
+	"./Panel",
+],function( base, Panel){
+	"use strict";
+
+	var DualContainer = Panel.inherit({
 		"klassName" : "DualContainer",
 
 		"_construct" : function (parent) {
-			Widget.prototype._construct.call(this, parent, "div");
+			Panel.prototype._construct.call(this, parent);
 
 			var skin = this.getSkin();
 
@@ -1445,46 +1473,20 @@ define('skylark-widgets-base/DualContainer',[
 	DualContainer.VERTICAL = 1;
 
 
-	return base.DualContainer = DualContainer;
+	return base.panels.DualContainer = DualContainer;
 });
-define('skylark-widgets-base/Panel',[
-	"./base",
-	"./Widget"
-],function(base,Widget){
-	"use strict";
-
-	/**
-	 * DOM division element.
-	 * 
-	 * @class Division
-	 * @extends {Widget}
-	 * @param {Widget} parent Parent element.
-	 */
-	var Pane = Widget.inherit({
-		"_construct" : function (parent) {
-			Widget.prototype._construct.call(this, parent, "div");
-
-			this._elm.style.overflow = "visible";
-		}
-
-	});
-
-
-	return base.Pane = Pane;
-});
-define('skylark-widgets-base/DualPanel',[
-	"./base",
-	"./Widget",
+define('skylark-widgets-base/panels/DualPanel',[
+	"../base",
 	"./Panel"
-],function( base, Widget,Panel){
+],function( base, Panel){
 	"use strict";
 
 
-	var DualPanel = Widget.inherit({
+	var DualPanel = Panel.inherit({
 		"klassName" : "DualPanel",
 
 		"_construct" : function (parent) {
-			Widget.prototype._construct.call(this, parent, "div");
+			Panel.prototype._construct.call(this, parent);
 
 			var skin = this.getSkin();
 
@@ -1601,7 +1603,7 @@ define('skylark-widgets-base/DualPanel',[
 	DualPanel.HORIZONTAL = 0;
 	DualPanel.VERTICAL = 1;
 
-	return containers.DualPanel = DualPanel;
+	return base.panels.DualPanel = DualPanel;
 });
 
 define('skylark-widgets-base/DragBuffer',[
@@ -1729,8 +1731,8 @@ define('skylark-widgets-base/main',[
 	"./Widget",
 	"./ImagePane",
 	"./TextPane",
-	"./DualContainer",
-    "./DualPanel",
+	"./panels/DualContainer",
+    "./panels/DualPanel",
     "./DragBuffer",
 	"./SkinManager",
 	"./SkinDark"

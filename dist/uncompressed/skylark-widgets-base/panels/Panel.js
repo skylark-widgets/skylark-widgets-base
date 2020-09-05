@@ -1,6 +1,6 @@
 define([
-	"./base",
-	"./Widget"
+	"../base",
+	"../Widget"
 ],function(base,Widget){
 	"use strict";
 
@@ -11,7 +11,7 @@ define([
 	 * @extends {Widget}
 	 * @param {Widget} parent Parent element.
 	 */
-	var Pane = Widget.inherit({
+	var Panel = Widget.inherit({
 		"_construct" : function (parent) {
 			Widget.prototype._construct.call(this, parent, "div");
 
@@ -21,5 +21,5 @@ define([
 	});
 
 
-	return base.Pane = Pane;
+	return base.panels.Panel = Panel;
 });

@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["skylark-langx/skylark"],function(a){return a.attach("widgets.base",{})});
+define(["skylark-langx/skylark"],function(a){return a.attach("widgets.base",{mixins:{},panels:{}})});
 //# sourceMappingURL=sourcemaps/base.js.map

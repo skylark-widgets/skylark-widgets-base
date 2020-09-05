@@ -1,16 +1,15 @@
 define([
-	"./base",
-	"./Widget",
+	"../base",
 	"./Panel"
-],function( base, Widget,Panel){
+],function( base, Panel){
 	"use strict";
 
 
-	var DualPanel = Widget.inherit({
+	var DualPanel = Panel.inherit({
 		"klassName" : "DualPanel",
 
 		"_construct" : function (parent) {
-			Widget.prototype._construct.call(this, parent, "div");
+			Panel.prototype._construct.call(this, parent);
 
 			var skin = this.getSkin();
 
@@ -127,5 +126,5 @@ define([
 	DualPanel.HORIZONTAL = 0;
 	DualPanel.VERTICAL = 1;
 
-	return containers.DualPanel = DualPanel;
+	return base.panels.DualPanel = DualPanel;
 });
