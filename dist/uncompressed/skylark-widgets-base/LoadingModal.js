@@ -81,7 +81,7 @@ define([
 			
 			//Event manager
 			//this.manager = new EventManager();
-			this.connect(window, "resize", function(event)
+			this.listenTo(this.$(window), "resize", function(event)
 			{
 				self.updateInterface();
 			});

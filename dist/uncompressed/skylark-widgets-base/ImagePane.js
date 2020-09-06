@@ -17,7 +17,7 @@ define([
 	var ImagePane = Widget.inherit({
 
 		_construct : function (parent) {
-			Widget.call(this, parent, "img");
+			Widget.prototype._construct.call(this, parent, "img");
 
 			this._elm.style.borderStyle = "none";
 			this._elm.style.objectFit = "contain"; //cover | fill

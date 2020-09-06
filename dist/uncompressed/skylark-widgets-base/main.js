@@ -1,6 +1,7 @@
 define([
 	"./base",
 	"./Widget",
+	"./CanvasPane",
 	"./ImagePane",
 	"./TextPane",
 	"./SubmitForm",

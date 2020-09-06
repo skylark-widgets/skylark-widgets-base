@@ -244,7 +244,7 @@ define('skylark-widgets-base/Widget',[
         }
 
         if (parent) {
-          this.parent(parent);
+          this.setParent(parent);
         }
         //if (this._elm.parentElement) {
         //  // The widget is already in document
@@ -652,12 +652,12 @@ define('skylark-widgets-base/Widget',[
     },
 
 
-    parent : function(parent) {
-      if (parent) {
-        this._parent = parent;
-        this.attach(parent._elm || parent.element);
-      } else {
-        return this._parent;
+    parent : {
+      get : function() {
+        return this.getParent();
+      },
+      set : function(v) {
+        this.setParent(v);
       }
     },
 
@@ -666,8 +666,13 @@ define('skylark-widgets-base/Widget',[
     },
 
     setParent : function(parent) {
+      var oldParent = this._parent;
       this._parent = parent;
-      this.attach(parent._elm || parent.element);
+      if (parent) {
+        this.attachTo(parent._elm || parent.element);
+      } else if (oldParent) {
+        this.detach();
+      }
       return this;
     },
 
@@ -720,10 +725,10 @@ define('skylark-widgets-base/Widget',[
     /**
      *  Attach the current widget element to dom document.
      *
-     * @method attach
+     * @method attachTo
      * @return {Widget} This Widget.
      */
-    attach : function(target,position){
+    attachTo : function(target,position){
         var elm = target.element || target;
         if (!position || position=="child") {
             noder.append(elm,this._elm);
@@ -753,12 +758,20 @@ define('skylark-widgets-base/Widget',[
     element : {
       get : function() {
         return this._elm;
+      },
+
+      set : function(v) {
+        this._elm = v;
       }
     },
 
     position : {
       get : function() {
         return this.location;
+      },
+
+      set : function(v) {
+        this.location = v;
       }
     },
 
@@ -853,7 +866,7 @@ define('skylark-widgets-base/Widget',[
 
   Widget.prototype.updateInterface = Widget.prototype.update;
   Widget.prototype.updatePosition = Widget.prototype.updateLocation;
-  Widget.prototype.attachTo = Widget.prototype.attach;
+  //Widget.prototype.attachTo = Widget.prototype.attach;
 
   /**
    * Top-left locationing.
@@ -945,6 +958,59 @@ define('skylark-widgets-base/Widget',[
   return base.Widget = Widget;
 });
 
+define('skylark-widgets-base/CanvasPane',[
+  "./base",
+  "./Widget"
+],function(
+	base,
+	Widget
+){
+	"use strict";
+
+	/**
+	 * DOM canvas element.
+	 * 
+	 * @class Canvas
+	 * @extends {Widget}
+	 * @param {Widget} parent Parent element.
+	 */
+	var CanvasPane = Widget.inherit({
+		"klassName" : "CanvasPane",
+
+		"_construct" : function (parent)
+		{
+			Widget.prototype._construct.call(this, parent, "canvas");
+
+			this.preventDragEvents();
+		},
+
+
+		/**
+		 * Get a context from this canvas.
+		 * 
+		 * @method getContext
+		 * @param {string} type Type of context to get "2d", "webgl", etc
+		 * @return {Object} Context obtained from the canvas.
+		 */
+		getContext : function(type)
+		{
+			return this._elm.getContext(type);
+		},
+
+		updateSize : function()
+		{
+			Widget.prototype.updateSize.call(this);
+
+			var pixelRatio = Editor.getPixelRatio();
+			
+			this._elm.width = this.size.x * pixelRatio;
+			this._elm.height = this.size.y * pixelRatio;
+		}
+
+	});
+
+	return base.CanvasPane = CanvasPane;
+});
 define('skylark-widgets-base/ImagePane',[
   "./base",
   "./Widget"
@@ -964,7 +1030,7 @@ define('skylark-widgets-base/ImagePane',[
 	var ImagePane = Widget.inherit({
 
 		_construct : function (parent) {
-			Widget.call(this, parent, "img");
+			Widget.prototype._construct.call(this, parent, "img");
 
 			this._elm.style.borderStyle = "none";
 			this._elm.style.objectFit = "contain"; //cover | fill
@@ -1411,16 +1477,7 @@ define('skylark-widgets-base/panels/DualContainer',[
 
 			var self = this;
 
-			//Tab mouse down
-			//this.resizeTab.onmousedown = function(event)
-			//{
-			//	self.manager.create();
-			//};
-
-			//Tab resize event manager
-			//this.manager = new EventManager();
-			this.connect(window, "mousemove", function(event)
-			{
+			function resizing(event) {
 				if(self.orientation === DualContainer.HORIZONTAL)
 				{	
 					self.tabPosition += event.movementX / self.size.x;
@@ -1441,12 +1498,28 @@ define('skylark-widgets-base/panels/DualContainer',[
 				}
 
 				self.updateInterface();
-			});
 
-			this.connect(window, "mouseup", function(event)
+			}
+			//Tab mouse down
+			this.resizeTab.onmousedown = function(event)
 			{
-				self.manager.destroy();
-			});
+			//	self.manager.create();
+				self.$(window).on("mousemove",resizing);
+				self.$(window).one("mouseup",function(){
+					self.$(window).off("mousemove",resizing);
+				});
+			};
+
+			//Tab resize event manager
+			//this.manager = new EventManager();
+
+			//this.listenTo(this.$(window), "mousemove", function(event){
+			//});
+
+			//this.connect(window, "mouseup", function(event)
+			//{
+			//	self.manager.destroy();
+			//});
 		},
 
 		attach : function(element) 	{
@@ -1475,7 +1548,7 @@ define('skylark-widgets-base/panels/DualContainer',[
 		},
 
 		updateSize : function() {
-			Widget.prototype.updateSize.call(this);
+			Panel.prototype.updateSize.call(this);
 
 			if(this._elmA === null || this._elmB === null) 	{
 				console.log("nunuStudio: Dual container elements are null", this, this._elmA, this._elmB);
@@ -1514,6 +1587,18 @@ define('skylark-widgets-base/panels/DualContainer',[
 				this.resizeTab.style.left = "0px";
 				this.resizeTab.style.width = this.size.x + "px";
 				this.resizeTab.style.height = this.tabSize + "px";
+			}
+		},
+
+		elementA : {
+			get : function() {
+				return this._elmA;
+			}
+		},
+
+		elementB : {
+			get : function() {
+				return this._elmB;
 			}
 		}
 
@@ -1645,6 +1730,18 @@ define('skylark-widgets-base/panels/DualPanel',[
 				this.resizeTab.style.left = "0px";
 				this.resizeTab.style.width = this.size.x + "px";
 				this.resizeTab.style.height = this.tabSize + "px";
+			}
+		},
+
+		elementA : {
+			get : function() {
+				return this._elmA;
+			}
+		},
+
+		elementB : {
+			get : function() {
+				return this._elmB;
 			}
 		}
 	});
@@ -2028,6 +2125,7 @@ define('skylark-widgets-base/skins/SkinDark',[
 define('skylark-widgets-base/main',[
 	"./base",
 	"./Widget",
+	"./CanvasPane",
 	"./ImagePane",
 	"./TextPane",
 	"./SubmitForm",

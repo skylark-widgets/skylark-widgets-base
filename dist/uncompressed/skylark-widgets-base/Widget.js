@@ -114,7 +114,7 @@ define([
         }
 
         if (parent) {
-          this.parent(parent);
+          this.setParent(parent);
         }
         //if (this._elm.parentElement) {
         //  // The widget is already in document
@@ -522,12 +522,12 @@ define([
     },
 
 
-    parent : function(parent) {
-      if (parent) {
-        this._parent = parent;
-        this.attach(parent._elm || parent.element);
-      } else {
-        return this._parent;
+    parent : {
+      get : function() {
+        return this.getParent();
+      },
+      set : function(v) {
+        this.setParent(v);
       }
     },
 
@@ -536,8 +536,13 @@ define([
     },
 
     setParent : function(parent) {
+      var oldParent = this._parent;
       this._parent = parent;
-      this.attach(parent._elm || parent.element);
+      if (parent) {
+        this.attachTo(parent._elm || parent.element);
+      } else if (oldParent) {
+        this.detach();
+      }
       return this;
     },
 
@@ -590,10 +595,10 @@ define([
     /**
      *  Attach the current widget element to dom document.
      *
-     * @method attach
+     * @method attachTo
      * @return {Widget} This Widget.
      */
-    attach : function(target,position){
+    attachTo : function(target,position){
         var elm = target.element || target;
         if (!position || position=="child") {
             noder.append(elm,this._elm);
@@ -623,12 +628,20 @@ define([
     element : {
       get : function() {
         return this._elm;
+      },
+
+      set : function(v) {
+        this._elm = v;
       }
     },
 
     position : {
       get : function() {
         return this.location;
+      },
+
+      set : function(v) {
+        this.location = v;
       }
     },
 
@@ -723,7 +736,7 @@ define([
 
   Widget.prototype.updateInterface = Widget.prototype.update;
   Widget.prototype.updatePosition = Widget.prototype.updateLocation;
-  Widget.prototype.attachTo = Widget.prototype.attach;
+  //Widget.prototype.attachTo = Widget.prototype.attach;
 
   /**
    * Top-left locationing.

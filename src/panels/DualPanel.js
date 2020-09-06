@@ -119,6 +119,18 @@ define([
 				this.resizeTab.style.width = this.size.x + "px";
 				this.resizeTab.style.height = this.tabSize + "px";
 			}
+		},
+
+		elementA : {
+			get : function() {
+				return this._elmA;
+			}
+		},
+
+		elementB : {
+			get : function() {
+				return this._elmB;
+			}
 		}
 	});
 

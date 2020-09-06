@@ -41,16 +41,7 @@ define([
 
 			var self = this;
 
-			//Tab mouse down
-			//this.resizeTab.onmousedown = function(event)
-			//{
-			//	self.manager.create();
-			//};
-
-			//Tab resize event manager
-			//this.manager = new EventManager();
-			this.connect(window, "mousemove", function(event)
-			{
+			function resizing(event) {
 				if(self.orientation === DualContainer.HORIZONTAL)
 				{	
 					self.tabPosition += event.movementX / self.size.x;
@@ -71,12 +62,28 @@ define([
 				}
 
 				self.updateInterface();
-			});
 
-			this.connect(window, "mouseup", function(event)
+			}
+			//Tab mouse down
+			this.resizeTab.onmousedown = function(event)
 			{
-				self.manager.destroy();
-			});
+			//	self.manager.create();
+				self.$(window).on("mousemove",resizing);
+				self.$(window).one("mouseup",function(){
+					self.$(window).off("mousemove",resizing);
+				});
+			};
+
+			//Tab resize event manager
+			//this.manager = new EventManager();
+
+			//this.listenTo(this.$(window), "mousemove", function(event){
+			//});
+
+			//this.connect(window, "mouseup", function(event)
+			//{
+			//	self.manager.destroy();
+			//});
 		},
 
 		attach : function(element) 	{
@@ -105,7 +112,7 @@ define([
 		},
 
 		updateSize : function() {
-			Widget.prototype.updateSize.call(this);
+			Panel.prototype.updateSize.call(this);
 
 			if(this._elmA === null || this._elmB === null) 	{
 				console.log("nunuStudio: Dual container elements are null", this, this._elmA, this._elmB);
@@ -144,6 +151,18 @@ define([
 				this.resizeTab.style.left = "0px";
 				this.resizeTab.style.width = this.size.x + "px";
 				this.resizeTab.style.height = this.tabSize + "px";
+			}
+		},
+
+		elementA : {
+			get : function() {
+				return this._elmA;
+			}
+		},
+
+		elementB : {
+			get : function() {
+				return this._elmB;
 			}
 		}
 
