@@ -539,7 +539,7 @@ define([
       var oldParent = this._parent;
       this._parent = parent;
       if (parent) {
-        this.attachTo(parent._elm || parent.element);
+        this._attachTo(parent._elm || parent.element);
       } else if (oldParent) {
         this.detach();
       }
@@ -598,7 +598,7 @@ define([
      * @method attachTo
      * @return {Widget} This Widget.
      */
-    attachTo : function(target,position){
+    _attachTo : function(target,position){
         var elm = target.element || target;
         if (!position || position=="child") {
             noder.append(elm,this._elm);
@@ -736,7 +736,7 @@ define([
 
   Widget.prototype.updateInterface = Widget.prototype.update;
   Widget.prototype.updatePosition = Widget.prototype.updateLocation;
-  //Widget.prototype.attachTo = Widget.prototype.attach;
+  Widget.prototype.attachTo = Widget.prototype.setParent;
 
   /**
    * Top-left locationing.
