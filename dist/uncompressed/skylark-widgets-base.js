@@ -751,7 +751,8 @@ define('skylark-widgets-base/Widget',[
     },
 
     preventDragEvents : function() {
-
+      this.element.ondrop = Widget.preventDefault;
+      this.element.ondragover = Widget.preventDefault;
     },
 
 
@@ -860,6 +861,38 @@ define('skylark-widgets-base/Widget',[
       this._elm.style.bottom = null;
       this._elm.style.right = null;
       this._elm.style.left = null;
+    },
+
+
+    /**
+     * Called to destroy a component.
+     *
+     * Destroy the element and removes it from its DOM parent.
+     * 
+     * @method destroy
+     */
+    destroy : function()
+    {
+      if(this._parent)
+      {
+        if(this._parent.element)
+        {
+          if(this._parent.element.contains(this.element))
+          {
+            this._parent.element.removeChild(this.element);
+            this._parent = null;
+          }
+        }
+        else
+        {
+          console.warn("nunuStudio: Parent is not a Element.", this);
+          if(this._parent.contains(this.element))
+          {
+            this._parent.removeChild(this.element);
+            this._parent = null;
+          }
+        }
+      }
     }
 
   });
@@ -953,6 +986,11 @@ define('skylark-widgets-base/Widget',[
       plugins.register(ctor,pluginName);
     }
     return ctor;
+  };
+
+  Widget.preventDefault = function(event)
+  {
+    event.preventDefault();
   };
 
   return base.Widget = Widget;
