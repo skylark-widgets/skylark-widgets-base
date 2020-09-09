@@ -5,6 +5,8 @@ define([
 	"./ImagePane",
 	"./TextPane",
 	"./SubmitForm",
+	"./actions/Action",
+	"./actions/ActionManager",
 	"./panels/DualContainer",
     "./panels/DualPanel",
     "./panels/RowsPanel",

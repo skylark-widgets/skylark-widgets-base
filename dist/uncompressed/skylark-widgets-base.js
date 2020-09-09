@@ -90,8 +90,12 @@ define('skylark-widgets-base/base',[
 	"skylark-langx/skylark"
 ],function(skylark){
 	return skylark.attach("widgets.base",{
+		"actions":{},
+		"dnd" : {},
+		"locales" : {},
 		"mixins" : {},
-		"panels" : {}
+		"panels" : {},
+		"skins" : {}
 	});
 });
 define('skylark-widgets-base/skins/SkinManager',[
@@ -1447,6 +1451,97 @@ define('skylark-widgets-base/SubmitForm',[
 	return base.SubmitForm = SubmitForm;
 });
 
+define('skylark-widgets-base/actions/ActionManager',[
+	"skylark-langx/Evented",
+	"../base"
+], function(Evented,actions){
+
+	var ActionManager = Evented.inherit({
+		"klassName"		:	"ActionManager",
+
+
+		addAction : function(category,name,fn,options) {
+
+		},
+
+		executeAction : function() {
+
+		},
+
+		removeAction : function(category,name) {
+
+		}
+
+	});
+
+	return base.actions.ActionManager = ActionManager;
+
+});
+
+
+define('skylark-widgets-base/actions/Action',[
+	"skylark-langx/objects",
+	"skylark-langx/Evented",
+	"skylark-data-collection/HashMap",
+	"../base",
+	"./ActionManager"
+], function(objects,Evented, HashMap, base, ActiionManager){
+
+	var Action = Evented.inherit({
+		"klassName" : "Action",
+
+		"name"  : "",
+
+		"category" : "",
+
+		"text" : "",
+
+		"tooltip" : "",
+
+		"icon" : "",
+
+		"shortcut" : "",
+
+		"state"  : {
+			get : function() {
+				return  this._state || (this._state = new HashMap({
+					checked : false,
+					disabled : false
+				}));
+			}
+		},
+
+		_construct : function(options) {
+			if (options) {
+				objects.mixin(this,options);
+			}
+		},
+
+		_init : function() {
+
+		},
+
+	    /**
+	     * Executes the command. Additional arguments are passed to the executing function
+	     *
+	     * @return {$.Promise} a  promise that will be resolved when the command completes.
+	     */
+		execute: function(params){
+			if (this._execute) {
+				this._execute(params);
+			}
+			this.trigger("executed",{
+				params :params
+			});
+		}
+
+	});
+	
+	return base.actions.Action = Action;
+});
+
+
+
 define('skylark-widgets-base/panels/Panel',[
 	"../base",
 	"../Widget"
@@ -2167,6 +2262,8 @@ define('skylark-widgets-base/main',[
 	"./ImagePane",
 	"./TextPane",
 	"./SubmitForm",
+	"./actions/Action",
+	"./actions/ActionManager",
 	"./panels/DualContainer",
     "./panels/DualPanel",
     "./panels/RowsPanel",
