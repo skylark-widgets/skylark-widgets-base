@@ -63,8 +63,8 @@ define([
         this.visible = true;
         
 
-        this.element.style.position = "absolute";
-        this.element.style.overflow = "hidden";
+        //this.element.style.position = "absolute";
+        //this.element.style.overflow = "hidden";
 
         /**
          * Size of this component in px.
