@@ -15,7 +15,12 @@ define([
 		"_construct" : function (parent) {
 			Widget.prototype._construct.call(this, parent, "div");
 
-			this._elm.style.overflow = "visible";
+			//this._elm.style.overflow = "visible";
+		},
+
+		_setupChild : function(child) {
+        	child.element.style.position = "absolute";
+        	//child.element.style.overflow = "hidden";			
 		}
 
 	});

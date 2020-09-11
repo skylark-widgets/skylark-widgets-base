@@ -540,6 +540,9 @@ define([
       this._parent = parent;
       if (parent) {
         this._attachTo(parent._elm || parent.element);
+        if (parent._setupChild) {
+          parent._setupChild(this);
+        }
       } else if (oldParent) {
         this.detach();
       }

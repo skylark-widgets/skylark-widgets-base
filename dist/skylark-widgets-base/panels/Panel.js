@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define(["../base","../Widget"],function(t,e){"use strict";var i=e.inherit({_construct:function(t){e.prototype._construct.call(this,t,"div"),this._elm.style.overflow="visible"}});return t.panels.Panel=i});
+define(["../base","../Widget"],function(t,e){"use strict";var n=e.inherit({_construct:function(t){e.prototype._construct.call(this,t,"div")},_setupChild:function(t){t.element.style.position="absolute"}});return t.panels.Panel=n});
 //# sourceMappingURL=../sourcemaps/panels/Panel.js.map

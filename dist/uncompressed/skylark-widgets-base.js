@@ -674,6 +674,9 @@ define('skylark-widgets-base/Widget',[
       this._parent = parent;
       if (parent) {
         this._attachTo(parent._elm || parent.element);
+        if (parent._setupChild) {
+          parent._setupChild(this);
+        }
       } else if (oldParent) {
         this.detach();
       }
@@ -1559,7 +1562,12 @@ define('skylark-widgets-base/panels/Panel',[
 		"_construct" : function (parent) {
 			Widget.prototype._construct.call(this, parent, "div");
 
-			this._elm.style.overflow = "visible";
+			//this._elm.style.overflow = "visible";
+		},
+
+		_setupChild : function(child) {
+        	child.element.style.position = "absolute";
+        	//child.element.style.overflow = "hidden";			
 		}
 
 	});
