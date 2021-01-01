@@ -431,11 +431,11 @@ define([
     /** 
      * Determine whether this widget element is assigned the given class.
      * 
-     * @method hassClass
+     * @method hasClass
      * @param {String} name Name of the class t.
      */
-    hassClass : function(name){
-      return this._velm.hassClass(name);
+    hasClass : function(name){
+      return this._velm.hasClass(name);
     },
 
     /** 
