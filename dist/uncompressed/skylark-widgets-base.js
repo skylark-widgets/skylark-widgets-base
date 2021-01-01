@@ -552,7 +552,7 @@ define('skylark-widgets-base/Widget',[
 
 
     /** 
-     * Add a CSS class to the base DOM element of this Element.
+     * Add a CSS class to the base DOM element of this widget element.
      * 
      * @method addClass
      * @param {String} name Name of the class to be added.
@@ -563,13 +563,34 @@ define('skylark-widgets-base/Widget',[
     },
 
     /** 
-     * Remove a CSS class from the base DOM element of this Element.
+     * Determine whether this widget element is assigned the given class.
+     * 
+     * @method hassClass
+     * @param {String} name Name of the class t.
+     */
+    hassClass : function(name){
+      return this._velm.hassClass(name);
+    },
+
+    /** 
+     * Remove a CSS class from the base DOM element of this idget element.
      * 
      * @method removeClass
      * @param {String} name Name of the class to be removed.
      */
     removeClass: function(name) {
       this._velm.removeClass(name);
+      return this;
+    },
+
+    /** 
+     * Remove a CSS class from the base DOM element of this idget element.
+     * 
+     * @method removeClass
+     * @param {String} name Name of the class to be removed.
+     */
+    toggleClass: function(name) {
+      this._velm.toggleClass(name);
       return this;
     },
 
