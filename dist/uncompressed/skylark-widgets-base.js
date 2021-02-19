@@ -224,6 +224,12 @@ define('skylark-widgets-base/Widget',[
          */
         this._mode = Widget.TOP_LEFT;
 
+
+        if (parent) {
+          this.setParent(parent);
+        }
+        
+        
         //this.state = this.options.state || new Map();
         this._init();
 
@@ -247,9 +253,6 @@ define('skylark-widgets-base/Widget',[
           }
         }
 
-        if (parent) {
-          this.setParent(parent);
-        }
         //if (this._elm.parentElement) {
         //  // The widget is already in document
         //  this._startup();
@@ -572,6 +575,18 @@ define('skylark-widgets-base/Widget',[
       return this._velm.hasClass(name);
     },
 
+    offset : function() {
+        return this._velm.pagePosition();
+    },
+
+    outerWidth : function() {
+        return this._velm.marginSize().width;
+    },
+
+    outerHeight : function() {
+        return this._velm.marginSize().height;
+    },
+
     /** 
      * Remove a CSS class from the base DOM element of this idget element.
      * 
@@ -694,7 +709,7 @@ define('skylark-widgets-base/Widget',[
       var oldParent = this._parent;
       this._parent = parent;
       if (parent) {
-        this._attachTo(parent._elm || parent.element);
+        this.attach(parent._elm || parent.element);
         if (parent._setupChild) {
           parent._setupChild(this);
         }
@@ -756,14 +771,17 @@ define('skylark-widgets-base/Widget',[
      * @method attachTo
      * @return {Widget} This Widget.
      */
-    _attachTo : function(target,position){
-        var elm = target.element || target;
+    attach : function(target,position){
+        var toElm = target.element || target,
+            elm = this._elm;
         if (!position || position=="child") {
-            noder.append(elm,this._elm);
+            noder.append(toElm,elm);
         } else  if (position == "before") {
-            noder.before(elm,this._elm);
+            noder.before(toElm,elm);
         } else if (position == "after") {
-            noder.after(elm,this._elm);
+            noder.after(toElm,elm);
+        } else if (position == "prepend") {
+            noder.prepend(toElm,elm);         
         }
         this._startup();
     },
@@ -928,6 +946,8 @@ define('skylark-widgets-base/Widget',[
   Widget.prototype.updateInterface = Widget.prototype.update;
   Widget.prototype.updatePosition = Widget.prototype.updateLocation;
   Widget.prototype.attachTo = Widget.prototype.setParent;
+
+  Widget.prototype._attachTo = Widget.prototype.attach;
 
   /**
    * Top-left locationing.
