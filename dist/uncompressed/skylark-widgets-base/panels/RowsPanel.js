@@ -89,7 +89,7 @@ define([
 			if(this.rows.length > 0)
 			{
 				this.rows[this.rows.length - 1].push(element);
-				element.attachTo(this);
+				element.setParent(this);
 			}
 		},
 

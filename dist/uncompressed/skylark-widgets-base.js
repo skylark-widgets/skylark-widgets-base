@@ -1721,12 +1721,12 @@ define('skylark-widgets-base/panels/DualContainer',[
 
 		attachA : function(element) {
 			this._elmA = element;
-			this._elmA.attachTo(this);
+			this._elmA.setParent(this);
 		},
 
 		attachB : function(element) {
 			this._elmB = element;
-			this._elmB.attachTo(this);
+			this._elmB.setParent(this);
 		},
 
 		updateSize : function() {
@@ -2026,7 +2026,7 @@ define('skylark-widgets-base/panels/RowsPanel',[
 			if(this.rows.length > 0)
 			{
 				this.rows[this.rows.length - 1].push(element);
-				element.attachTo(this);
+				element.setParent(this);
 			}
 		},
 

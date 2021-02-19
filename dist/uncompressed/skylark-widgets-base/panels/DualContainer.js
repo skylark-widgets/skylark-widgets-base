@@ -103,12 +103,12 @@ define([
 
 		attachA : function(element) {
 			this._elmA = element;
-			this._elmA.attachTo(this);
+			this._elmA.setParent(this);
 		},
 
 		attachB : function(element) {
 			this._elmB = element;
-			this._elmB.attachTo(this);
+			this._elmB.setParent(this);
 		},
 
 		updateSize : function() {
