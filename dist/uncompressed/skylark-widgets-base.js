@@ -739,12 +739,14 @@ define('skylark-widgets-base/Widget',[
       return fx.throb(this._elm,params);
     },
 
+    /*
     emit : function(type,params) {
       var e = events.createEvent(type,{
         data : params
       });
       return events.Emitter.prototype.emit.call(this,e,params);
     },
+    */
 
     /**
      * Update component appearance.
