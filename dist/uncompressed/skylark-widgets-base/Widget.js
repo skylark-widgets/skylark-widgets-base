@@ -602,7 +602,10 @@ define([
     },
 
     throb: function(params) {
-      return fx.throb(this._elm,params);
+      if (this.options.throbber) {
+        params = objects.defaults(params,this.options.throbber);
+      }
+      return noder.throb(this._elm,params);
     },
 
     /*
