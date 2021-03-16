@@ -866,12 +866,12 @@ define('skylark-widgets-base/Widget',[
       var oldParent = this._parent;
       this._parent = parent;
       if (parent) {
-        this.attach(parent._elm || parent.element);
+        this.mount(parent._elm || parent.element);
         if (parent._setupChild) {
           parent._setupChild(this);
         }
       } else if (oldParent) {
-        this.detach();
+        this.unmount();
       }
       return this;
     },
@@ -928,12 +928,12 @@ define('skylark-widgets-base/Widget',[
 
 
     /**
-     *  Attach the current widget element to dom document.
+     *  mount the current widget element to dom document.
      *
-     * @method attachTo
+     * @method mount
      * @return {Widget} This Widget.
      */
-    attach : function(target,position){
+    mount : function(target,position){
         var toElm = target.element || target,
             elm = this._elm;
         if (!position || position=="child") {
@@ -949,12 +949,12 @@ define('skylark-widgets-base/Widget',[
     },
 
     /**
-     *  Detach the current widget element from dom document.
+     *  unmount the current widget element from dom document.
      *
      * @method html
      * @return {HtmlElement} HTML element representing the widget.
      */
-    detach : function() {
+    unmount : function() {
       this._velm.remove();
     },
 
@@ -1108,8 +1108,8 @@ define('skylark-widgets-base/Widget',[
   Widget.prototype.updateInterface = Widget.prototype.update;
   Widget.prototype.updatePosition = Widget.prototype.updateLocation;
   Widget.prototype.attachTo = Widget.prototype.setParent;
-
-  Widget.prototype._attachTo = Widget.prototype.attach;
+  Widget.prototype._attachTo = Widget.prototype.mount;
+  Widget.prototype.detach = Widget.prototype.unmount;
 
   /**
    * Top-left locationing.
