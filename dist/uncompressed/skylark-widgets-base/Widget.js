@@ -31,7 +31,7 @@ define([
 
             "abort": 3, // Event
             "change": 3, // Event
-            "error": 3, // Event
+            ///"error": 3, // Event
             "selectionchange": 3, // Event
             "submit": 3, // Event
             "reset": 3, // Event
