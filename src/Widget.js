@@ -13,7 +13,7 @@ define([
   "skylark-domx-velm",
   "skylark-domx-query",
   "skylark-domx-fx",
-  "skylark-domx-plugins",
+  "skylark-domx-plugins-base",
   "skylark-data-collection/HashMap",
   "./base",
   "./skins/SkinManager"
