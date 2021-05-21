@@ -173,13 +173,7 @@ define([
          * @type {Number}
          */
         this._mode = Widget.TOP_LEFT;
-
-
-        if (parent) {
-          this.setParent(parent);
-        }
-        
-        
+     
         //this.state = this.options.state || new Map();
         this._init();
 
@@ -207,6 +201,13 @@ define([
         //  // The widget is already in document
         //  this._startup();
         //}
+
+        if (parent) {
+          this.setParent(parent);
+        } else if (this._velm.isInDocument()) {
+          this._startup();
+        }
+
     },
 
     /**
