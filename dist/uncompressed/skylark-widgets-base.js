@@ -311,20 +311,26 @@ define('skylark-widgets-base/widget',[
         //this.state = this.options.state || new Map();
         this._init();
 
-        var addonCategoryOptions = this.options.addons;
+        let addonCategoryOptions = this.options.addons;
         if (addonCategoryOptions) {
-          var widgetCtor = this.constructor,
+          let widgetCtor = this.constructor,
               addons = widgetCtor.addons;
-          for (var categoryName in addonCategoryOptions) {
-              for (var i =0;i < addonCategoryOptions[categoryName].length; i++ ) {
-                var addonOption = addonCategoryOptions[categoryName][i];
+          for (let categoryName in addonCategoryOptions) {
+              for (let i =0;i < addonCategoryOptions[categoryName].length; i++ ) {
+                let addonOption = addonCategoryOptions[categoryName][i];
                 if (types.isString(addonOption)) {
-                  var addonName = addonOption,
+                  let addonName = addonOption,
                       addonSetting = addons[categoryName][addonName],
                       addonCtor = addonSetting.ctor ? addonSetting.ctor : addonSetting;
 
                   this.addon(addonCtor,addonSetting.options);
 
+                } else if (types.isPlainObject(addonOption)) {  
+                  let addonName = addonOption.name,
+                      addonSetting = addons[categoryName][addonName],
+                      addonCtor = addonSetting.ctor ? addonSetting.ctor : addonSetting;
+
+                  this.addon(addonCtor,addonOption.options);
                 }
 
               }
