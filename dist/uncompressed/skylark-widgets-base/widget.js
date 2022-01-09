@@ -14,7 +14,7 @@ define([
   "skylark-domx-query",
   "skylark-domx-fx",
   "skylark-domx-plugins-base",
-  "skylark-data-collection/hash-map",
+  "skylark-data-collections/hash-map",
   "./base",
   "./skins/skin-manager"
 ],function(skylark,types,objects,events,Vector2,browser,datax,eventer,noder,files,geom,elmx,$,fx, plugins,HashMap,base,SkinManager){

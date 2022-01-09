@@ -1,7 +1,7 @@
 define([
 	"skylark-langx-objects",
 	"skylark-langx-events/emitter",
-	"skylark-data-collection/hash-map",
+	"skylark-data-collections/hash-map",
 	"../base",
 	"./action-manager"
 ], function(objects,Evented, HashMap, base, ActiionManager){

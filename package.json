@@ -24,7 +24,7 @@
   "license": "MIT",
   "bugs": "https://github.com/skylark-widgets/skylark-widgets-base/issues",
   "dependencies": {
-    "skylark-data-collection": "git+https://github.com/skylark-data/skylark-data-collection.git",
+    "skylark-data-collections": "git+https://github.com/skylark-data/skylark-data-collections.git",
     "skylark-domx-browser": "git+https://github.com/skylark-domx/skylark-domx-browser.git",
     "skylark-domx-data": "git+https://github.com/skylark-domx/skylark-domx-data.git",
     "skylark-domx-eventer": "git+https://github.com/skylark-domx/skylark-domx-eventer.git",
